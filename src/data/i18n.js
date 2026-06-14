@@ -110,7 +110,8 @@ export const I18N = {
         errMessage: 'El mensaje debe tener al menos 20 caracteres',
         successTitle: 'Mensaje enviado',
         successDesc: 'Gracias por escribir. Te respondo en menos de 24 horas.',
-        sendAnother: 'Enviar otro mensaje'
+        sendAnother: 'Enviar otro mensaje',
+        errSend: 'No se pudo enviar. Inténtalo de nuevo o escríbeme por correo.'
       }
     },
     footer: {
@@ -237,7 +238,8 @@ export const I18N = {
         errMessage: 'Message must be at least 20 characters',
         successTitle: 'Message sent',
         successDesc: 'Thanks for writing. I will get back to you within 24 hours.',
-        sendAnother: 'Send another message'
+        sendAnother: 'Send another message',
+        errSend: 'Could not send. Please try again or reach me by email.'
       }
     },
     footer: {

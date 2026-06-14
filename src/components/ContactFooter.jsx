@@ -1,7 +1,7 @@
 /* ============================================================
    Contacto + Footer
    v1.0.0: firma "Alex DEV", copyright actualizado, versión 1.0.0.
-   El formulario sigue simulando el envío (Web3Forms pendiente).
+   Formulario conectado a Web3Forms (PUBLIC_WEB3FORMS_KEY en .env).
    ============================================================ */
 
 import React from 'react';
@@ -9,6 +9,8 @@ import { I18N } from '../data/i18n.js';
 import { useReveal, NAV_IDS } from './Ui.jsx';
 import { Mail, Download, Check } from 'lucide-react';
 import { FaGithub, FaLinkedin } from 'react-icons/fa6';
+
+export const CONTACT_EMAIL = 'alexenriquezvera@gmail.com';
 
 export function ContactSection({ lang }) {
   const t = I18N[lang].contact;
@@ -18,7 +20,11 @@ export function ContactSection({ lang }) {
   const [errors, setErrors] = React.useState({});
   const [sent, setSent] = React.useState(false);
   const [sending, setSending] = React.useState(false);
+  const [sendError, setSendError] = React.useState('');
   const [copied, setCopied] = React.useState(false);
+  const botRef = React.useRef(null);
+
+  const WEB3FORMS_KEY = import.meta.env.PUBLIC_WEB3FORMS_KEY;
 
   const set = (k) => (e) => setFields({ ...fields, [k]: e.target.value });
 
@@ -33,19 +39,45 @@ export function ContactSection({ lang }) {
     return Object.keys(errs).length === 0;
   }
 
-  function onSubmit(e) {
+  async function onSubmit(e) {
     e.preventDefault();
     if (!validate()) return;
+    // Honeypot: si está relleno, lo trata como spam (silencioso).
+    if (botRef.current && botRef.current.checked) { setSent(true); return; }
+    setSendError('');
     setSending(true);
-    // Placeholder de Web3Forms: simula envío
-    setTimeout(() => { setSending(false); setSent(true); }, 900);
+    try {
+      const res = await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({
+          access_key: WEB3FORMS_KEY,
+          subject: `Nuevo mensaje del portafolio — ${fields.name}`,
+          from_name: 'Portafolio Alex DEV',
+          name: fields.name,
+          email: fields.email,
+          [f.type]: fields.type || '—',
+          [f.budget]: fields.budget || '—',
+          message: fields.message,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setSent(true);
+      } else {
+        setSendError(f.errSend);
+      }
+    } catch {
+      setSendError(f.errSend);
+    } finally {
+      setSending(false);
+    }
   }
 
   function copyEmail(e) {
     e.preventDefault();
-    const email = 'hola@spacedev.example'; // placeholder
     if (navigator.clipboard) {
-      navigator.clipboard.writeText(email).then(() => {
+      navigator.clipboard.writeText(CONTACT_EMAIL).then(() => {
         setCopied(true);
         setTimeout(() => setCopied(false), 1800);
       });
@@ -93,7 +125,7 @@ export function ContactSection({ lang }) {
               <div className="ok-ring"><Check size={28} aria-hidden="true" /></div>
               <h3 style={{ fontSize: 20, fontWeight: 600 }}>{f.successTitle}</h3>
               <p style={{ color: 'var(--text-1)', fontSize: 15 }}>{f.successDesc}</p>
-              <button type="button" className="btn btn-ghost" onClick={() => { setSent(false); setFields({ name: '', email: '', type: '', budget: '', message: '' }); }}>
+              <button type="button" className="btn btn-ghost" onClick={() => { setSent(false); setSendError(''); setFields({ name: '', email: '', type: '', budget: '', message: '' }); }}>
                 {f.sendAnother}
               </button>
             </div>
@@ -119,6 +151,17 @@ export function ContactSection({ lang }) {
               </div>
               {field('message', <span>{f.message} <span className="req">*</span></span>,
                 <textarea id="fld-message" rows={5} value={fields.message} onChange={set('message')} placeholder={f.messagePh}></textarea>)}
+              {/* Honeypot anti-spam: oculto a usuarios, visible para bots */}
+              <input
+                ref={botRef}
+                type="checkbox"
+                name="botcheck"
+                tabIndex={-1}
+                autoComplete="off"
+                aria-hidden="true"
+                style={{ position: 'absolute', left: '-9999px', width: 1, height: 1, opacity: 0 }}
+              />
+              {sendError && <p className="field-error" role="alert" style={{ marginBottom: 12 }}>{sendError}</p>}
               <div>
                 <button type="submit" className="btn btn-primary" disabled={sending}>
                   {sending ? f.sending : f.send}
@@ -160,7 +203,7 @@ export function Footer({ lang }) {
           <div className="footer-social">
             <a href="#" onClick={(e) => e.preventDefault()} aria-label="GitHub"><FaGithub size={17} aria-hidden="true" /></a>
             <a href="#" onClick={(e) => e.preventDefault()} aria-label="LinkedIn"><FaLinkedin size={17} aria-hidden="true" /></a>
-            <a href="#" onClick={(e) => e.preventDefault()} aria-label="Email"><Mail size={17} aria-hidden="true" /></a>
+            <a href={'mailto:' + CONTACT_EMAIL} aria-label="Email"><Mail size={17} aria-hidden="true" /></a>
           </div>
         </div>
       </div>
