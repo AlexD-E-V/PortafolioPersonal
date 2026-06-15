@@ -57,7 +57,8 @@ export const I18N = {
       visit: 'Visitar',
       inProgress: 'En proceso',
       code: 'Ver código',
-      empty: 'No hay proyectos en esta categoría todavía.'
+      empty: 'No hay proyectos en esta categoría todavía.',
+      behance: 'Puedes visitar mis proyectos de animación, ilustración y diseño también'
     },
     modal: {
       summary: 'Resumen',
@@ -185,7 +186,8 @@ export const I18N = {
       visit: 'Visit',
       inProgress: 'In progress',
       code: 'View code',
-      empty: 'No projects in this category yet.'
+      empty: 'No projects in this category yet.',
+      behance: 'You can also check out my animation, illustration and design work'
     },
     modal: {
       summary: 'Summary',

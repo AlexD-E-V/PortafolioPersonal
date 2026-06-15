@@ -518,6 +518,76 @@ section.site-section {
   text-wrap: pretty;
 }
 
+/* Encabezado de proyectos: texto a la izquierda, card de Behance a la derecha */
+.projects-head {
+  display: flex;
+  align-items: flex-start;
+  gap: 32px;
+}
+.projects-head-text { flex: 0 1 600px; min-width: 0; }
+
+/* Hueco a la derecha: centra la card horizontalmente; el offset vertical
+   se controla con el margin-top de la card */
+.behance-card-slot {
+  flex: 1;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.behance-card {
+  flex-shrink: 0;
+  width: 260px;
+  margin-top: 56px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 20px;
+  border: 1px solid var(--border-subtle);
+  border-radius: 14px;
+  background: rgba(23, 105, 255, 0.04);
+  transition: border-color 0.25s, box-shadow 0.25s, transform 0.25s;
+}
+.behance-card-icon {
+  display: inline-flex;
+  color: #1769ff;
+  margin-bottom: 4px;
+}
+.behance-card-title {
+  font-weight: 600;
+  font-size: 16px;
+  color: var(--text-0);
+}
+.behance-card-sub {
+  font-size: 13px;
+  line-height: 1.4;
+  color: var(--text-2);
+}
+.behance-card-art {
+  display: inline;
+  vertical-align: -2px;
+  margin-left: 5px;
+  color: #1769ff;
+}
+.behance-card:hover {
+  border-color: rgba(23, 105, 255, 0.5);
+  box-shadow: 0 0 22px rgba(23, 105, 255, 0.18);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 820px) {
+  .projects-head { flex-direction: column; gap: 22px; }
+  .behance-card {
+    width: 100%;
+    margin-top: 0;
+    flex-direction: row;
+    align-items: center;
+    gap: 14px;
+  }
+  .behance-card-icon { margin-bottom: 0; }
+  .behance-card-title { display: none; }
+}
+
 /* Botón de filtros secundarios de la constelación (icono temporal) */
 .chip-more {
   color: var(--gold);

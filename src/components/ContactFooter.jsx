@@ -8,10 +8,11 @@ import React from 'react';
 import { I18N } from '../data/i18n.js';
 import { useReveal, NAV_IDS } from './Ui.jsx';
 import { Mail, Download, Check } from 'lucide-react';
-import { FaGithub, FaLinkedin } from 'react-icons/fa6';
+import { FaGithub, FaLinkedin, FaBehance } from 'react-icons/fa6';
 
 export const CONTACT_EMAIL = 'alexenriquezvera@gmail.com';
 export const GITHUB_URL = 'https://github.com/AlexD-E-V';
+export const BEHANCE_URL = 'https://www.behance.net/alexenriquez';
 
 export function ContactSection({ lang }) {
   const t = I18N[lang].contact;
@@ -204,6 +205,7 @@ export function Footer({ lang }) {
           <div className="footer-social">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub"><FaGithub size={17} aria-hidden="true" /></a>
             <a href="#" onClick={(e) => e.preventDefault()} aria-label="LinkedIn"><FaLinkedin size={17} aria-hidden="true" /></a>
+            <a href={BEHANCE_URL} target="_blank" rel="noopener noreferrer" aria-label="Behance"><FaBehance size={17} aria-hidden="true" /></a>
             <a href={'mailto:' + CONTACT_EMAIL} aria-label="Email"><Mail size={17} aria-hidden="true" /></a>
           </div>
         </div>

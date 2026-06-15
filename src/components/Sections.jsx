@@ -15,8 +15,9 @@ import { TECH_LABELS } from '../data/skills.js';
 import { EXPERIENCE } from '../data/experience.js';
 import { useReveal, Bold } from './Ui.jsx';
 import { Constellation } from './Constellation.jsx';
-import { ArrowRight, ExternalLink, Clock, X, ChevronLeft, ChevronRight, Sparkles } from 'lucide-react';
-import { FaGithub } from 'react-icons/fa6';
+import { ArrowRight, ExternalLink, Clock, X, ChevronLeft, ChevronRight, Sparkles, Palette } from 'lucide-react';
+import { FaGithub, FaBehance } from 'react-icons/fa6';
+import { BEHANCE_URL } from './ContactFooter.jsx';
 
 export const FILTER_KEYS = ['all', 'web', 'apps', 'games', 'xr'];
 // Filtros secundarios de la constelación (se despliegan con el botón ✦)
@@ -182,9 +183,23 @@ export function ProjectsSection({ lang, filter, setFilter, techFilter, clearTech
 
   return (
     <section className="site-section" id="proyectos" ref={ref}>
-      <span className="section-label">{t.projects.label}</span>
-      <h2 className="section-title">{t.projects.title}</h2>
-      <p className="projects-intro"><Bold text={t.projects.intro} /></p>
+      <div className="projects-head">
+        <div className="projects-head-text">
+          <span className="section-label">{t.projects.label}</span>
+          <h2 className="section-title">{t.projects.title}</h2>
+          <p className="projects-intro"><Bold text={t.projects.intro} /></p>
+        </div>
+        <div className="behance-card-slot">
+          <a className="behance-card" href={BEHANCE_URL} target="_blank" rel="noopener noreferrer">
+            <span className="behance-card-icon"><FaBehance size={26} aria-hidden="true" /></span>
+            <span className="behance-card-title">Behance</span>
+            <span className="behance-card-sub">
+              {t.projects.behance}
+              <Palette size={14} className="behance-card-art" aria-hidden="true" />
+            </span>
+          </a>
+        </div>
+      </div>
       {techFilter && (
         <div className="tech-filter-pill">
           <span>{t.projects.filteringBy} {techFilter.name}</span>
