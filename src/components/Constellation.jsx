@@ -27,7 +27,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
   const wrapRef = React.useRef(null);
   const canvasRef = React.useRef(null);
   const [tooltip, setTooltip] = React.useState(null);
-  const animRef = React.useRef({ stars: {}, hovered: null, raf: null, t: 0, pan: 0 });
+  const animRef = React.useRef({ stars: {}, hovered: null, raf: null, t: 0, pan: 0, vel: 0 });
 
   const t9n = I18N[lang].skills;
 
@@ -109,6 +109,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
 
     // --- Pan con click sostenido sobre el vacío ---
     let panning = false, panMoved = false, panStartX = 0, panStartVal = 0;
+    let lastX = 0, lastT = 0; // para medir la velocidad del flick al soltar
 
     function onPointerDown(e) {
       const r = canvas.getBoundingClientRect();
@@ -116,6 +117,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       if (s) return; // sobre una estrella: el click filtra, no panea
       panning = true; panMoved = false;
       panStartX = e.clientX; panStartVal = A.pan;
+      lastX = e.clientX; lastT = e.timeStamp; A.vel = 0; // corta cualquier inercia en curso
       canvas.setPointerCapture(e.pointerId);
       canvas.style.cursor = 'grabbing';
       setTooltip(null);
@@ -125,6 +127,12 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       const dx = e.clientX - panStartX;
       if (Math.abs(dx) > 4) panMoved = true;
       A.pan = clampPan(panStartVal - dx);
+      // velocidad del pan (px por ~frame), normalizada por el tiempo real
+      // entre eventos y con un suavizado ligero para que el flick sea estable.
+      const dt = Math.max(1, e.timeStamp - lastT);
+      const vInst = (-(e.clientX - lastX) / dt) * 16;
+      A.vel = A.vel * 0.6 + vInst * 0.4;
+      lastX = e.clientX; lastT = e.timeStamp;
     }
     function onPointerUp(e) {
       if (!panning) return;
@@ -132,6 +140,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       try { canvas.releasePointerCapture(e.pointerId); } catch (err) {}
       const r = canvas.getBoundingClientRect();
       setIdleCursor(starAt(e.clientX - r.left, e.clientY - r.top));
+      // A.vel se conserva → el loop de animación aplica la inercia.
     }
 
     function onMove(e) {
@@ -182,6 +191,16 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       A.raf = requestAnimationFrame(draw);
       if (!running) return;
       if (!reducedMotion) A.t += 0.016;
+
+      // Inercia del pan: al soltar, el desplazamiento sigue deslizándose
+      // y desacelera por fricción hasta frenar (sensación táctil natural).
+      if (!panning && Math.abs(A.vel) > 0.05) {
+        const next = clampPan(A.pan + A.vel);
+        if (next === A.pan) A.vel = 0; // chocó con el borde → frena
+        A.pan = next;
+        A.vel *= 0.92; // fricción: más alto = deslizamiento más largo
+      }
+
       ctx.clearRect(0, 0, W, H);
 
       const byId = {};
