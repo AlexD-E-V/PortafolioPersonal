@@ -14,6 +14,14 @@ export const CONTACT_EMAIL = 'alexenriquezvera@gmail.com';
 export const GITHUB_URL = 'https://github.com/AlexD-E-V';
 export const BEHANCE_URL = 'https://www.behance.net/alexenriquez';
 
+/* CV por idioma. Coloca los PDFs en public/cv/ con estos nombres
+   exactos (al publicar el sitio se sirven desde la raíz). El botón
+   descarga el que corresponde al idioma activo de la página. */
+export const CV_URLS = {
+  es: '/cv/CV-Alex-DEV-ES.pdf',
+  en: '/cv/CV-Alex-DEV-EN.pdf',
+};
+
 export function ContactSection({ lang }) {
   const t = I18N[lang].contact;
   const f = t.form;
@@ -115,7 +123,7 @@ export function ContactSection({ lang }) {
             <a className="contact-method" href="#" onClick={(e) => e.preventDefault()}>
               <span className="m-icon"><FaLinkedin size={16} aria-hidden="true" /></span>LinkedIn
             </a>
-            <a className="contact-method" href="#" onClick={(e) => e.preventDefault()}>
+            <a className="contact-method" href={CV_URLS[lang]} download>
               <span className="m-icon"><Download size={16} aria-hidden="true" /></span>{t.cv}
             </a>
           </div>

@@ -1,6 +1,9 @@
 # Config local de Claude Code / agente
 .claude/
 
+# Documentación interna / contexto de trabajo (no se publica)
+docs/
+
 # Dependencias
 node_modules/
 

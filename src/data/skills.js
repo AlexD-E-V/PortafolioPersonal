@@ -70,9 +70,10 @@ export const SKILLS = [
 
   // --- Diseño (filtro secundario — subsección con Behance pendiente) ---
   { id: 'figma',      name: 'Figma',        cat: 'design',  x: 0.27, y: 0.80, size: 0.95, main: false, enabled: true },
-  { id: 'illustrator', name: 'Illustrator', cat: 'design',  x: 0.04, y: 0.94, size: 0.85, main: false, enabled: false },
+  { id: 'illustrator', name: 'Illustrator', cat: 'design',  x: 0.07, y: 0.88, size: 0.9,  main: false, enabled: true },
   { id: 'photoshop',  name: 'Photoshop',    cat: 'design',  x: 0.18, y: 0.96, size: 0.85, main: false, enabled: true },
   { id: 'vegas',      name: 'VEGAS Pro 17', cat: 'design',  x: 0.34, y: 0.90, size: 0.9,  main: false, enabled: true },
+  { id: 'animate',    name: 'Adobe Animate', cat: 'design', x: 0.45, y: 0.84, size: 0.9,  main: false, enabled: true },
   { id: 'maya',       name: 'Maya',         cat: 'design',  x: 0.58, y: 0.96, size: 0.85, main: false, enabled: false },
   { id: 'blender',    name: 'Blender',      cat: 'design',  x: 0.46, y: 0.96, size: 0.85, main: false, enabled: false }
 ];
@@ -118,5 +119,6 @@ export const SKILL_LINKS = [
   ['vercel', 'github'], ['vercel', 'hostinger'], ['hostinger', 'ecuahosting'],
   // Diseño
   ['figma', 'css'], ['figma', 'vscode'],
-  ['figma', 'photoshop'], ['photoshop', 'vegas']
+  ['figma', 'photoshop'], ['photoshop', 'vegas'],
+  ['illustrator', 'photoshop'], ['vegas', 'animate']
 ];
