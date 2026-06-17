@@ -80,7 +80,8 @@ export function BootSequence({ lang, onDone }) {
 
   React.useEffect(() => {
     if (!fading) return;
-    const t = setTimeout(() => { setVisible(false); onDone && onDone(); }, 520);
+    onDone && onDone(); // dispara el reveal del hero MIENTRAS el overlay se desvanece (crossfade)
+    const t = setTimeout(() => setVisible(false), 520);
     return () => clearTimeout(t);
   }, [fading]);
 
@@ -170,7 +171,7 @@ export function StatusPill({ lang, status }) {
 /* ---------- Header ---------- */
 export const NAV_IDS = ['inicio', 'sobre', 'habilidades', 'proyectos', 'experiencia', 'proceso', 'contacto'];
 
-export function Header({ lang, setLang, status, activeSection }) {
+export function Header({ lang, setLang, status, activeSection, revealed }) {
   const [scrolled, setScrolled] = React.useState(false);
   const [menuOpen, setMenuOpen] = React.useState(false);
   const t = I18N[lang];
@@ -201,7 +202,7 @@ export function Header({ lang, setLang, status, activeSection }) {
 
   return (
     <React.Fragment>
-      <header className={'site-header' + (scrolled ? ' scrolled' : '')}>
+      <header className={'site-header' + (scrolled ? ' scrolled' : '') + (revealed ? ' revealed' : ' pre-reveal')}>
         <div className="header-inner">
           <a className="logo" href="#inicio" onClick={(e) => { e.preventDefault(); goTo('inicio'); }} aria-label="Alex D.E.V. — Inicio">
             <img className="logo-img" src="/brand/iso.png" alt="Alex D.E.V." width="49" height="36" />
@@ -239,7 +240,7 @@ export function Header({ lang, setLang, status, activeSection }) {
    detrás del texto, extendida hasta los bordes del hero sin
    recortes). El texto va encima con pointer-events selectivos
    para que el hover/click de los planetas siga funcionando. */
-export function Hero({ lang, status, onPlanetClick, reducedMotion }) {
+export function Hero({ lang, status, onPlanetClick, reducedMotion, revealed }) {
   const t = I18N[lang];
   const meta = STATUS_META[status] || STATUS_META.available;
 
@@ -249,7 +250,7 @@ export function Hero({ lang, status, onPlanetClick, reducedMotion }) {
   };
 
   return (
-    <div className="hero" id="inicio">
+    <div className={'hero' + (revealed ? ' revealed' : ' pre-reveal')} id="inicio">
       <Hero3D lang={lang} onPlanetClick={onPlanetClick} reducedMotion={reducedMotion} />
       <div className="hero-content">
         <div className="hero-badge">

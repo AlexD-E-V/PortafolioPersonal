@@ -81,6 +81,26 @@ export default function App() {
   // ----- Modal -----
   const [openProject, setOpenProject] = React.useState(null);
 
+  // ----- Reveal de entrada (hero + header) -----
+  // Si hay reduced-motion → visible de inmediato, sin animación.
+  // Si se mostrará el boot (misma condición que BootSequence) → espera a
+  // que termine (onDone). Si no hay boot (visita recurrente) → revela en el
+  // primer frame con el mismo efecto.
+  const bootWillShow = React.useRef(
+    !reducedMotion && !localStorage.getItem('ae_boot_seen')
+  ).current;
+  const [revealed, setRevealed] = React.useState(reducedMotion);
+  React.useEffect(() => {
+    if (reducedMotion || bootWillShow) return;
+    const id = requestAnimationFrame(() => setRevealed(true));
+    return () => cancelAnimationFrame(id);
+  }, []);
+  // Seguro: pase lo que pase, el contenido nunca queda oculto.
+  React.useEffect(() => {
+    const t = setTimeout(() => setRevealed(true), 5000);
+    return () => clearTimeout(t);
+  }, []);
+
   // ----- Sección activa -----
   const [activeSection, setActiveSection] = React.useState('inicio');
   React.useEffect(() => {
@@ -137,11 +157,11 @@ export default function App() {
       <a className="skip-link" href="#sobre">{t.skipLink}</a>
       <div className="nebula-bg" aria-hidden="true"></div>
       <StaticStarfield />
-      <BootSequence lang={lang} onDone={() => {}} />
+      <BootSequence lang={lang} onDone={() => setRevealed(true)} />
       <CustomCursor enabled={SITE.customCursor} />
-      <Header lang={lang} setLang={setLang} status={SITE.status} activeSection={activeSection} />
+      <Header lang={lang} setLang={setLang} status={SITE.status} activeSection={activeSection} revealed={revealed} />
       <main id="main">
-        <Hero lang={lang} status={SITE.status} onPlanetClick={onPlanetClick} reducedMotion={reducedMotion} />
+        <Hero lang={lang} status={SITE.status} onPlanetClick={onPlanetClick} reducedMotion={reducedMotion} revealed={revealed} />
         <About lang={lang} />
         <SkillsSection lang={lang} filter={skillFilter} setFilter={setSkillFilter} onStarClick={onStarClick} reducedMotion={reducedMotion} />
         <ProjectsSection

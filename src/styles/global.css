@@ -356,6 +356,44 @@ section.site-section {
 }
 /* Marca "D.E.V." en azul, como el logo (Alex claro + D.E.V. azul) */
 .brand-dev { color: var(--blue-light); }
+
+/* ---------- Reveal de entrada (tras la animación de boot) ----------
+   El hero y el header empiezan ocultos y aparecen escalonados cuando
+   `revealed` se activa (al terminar el boot, o de inmediato en visitas
+   recurrentes). Si JS no aplica la clase o hay reduced-motion, el
+   contenido se mantiene visible (ver media query abajo). */
+.hero.pre-reveal .hero-content > * {
+  opacity: 0;
+  transform: translateY(14px);
+}
+.hero.revealed .hero-content > * {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.hero.revealed .hero-content > *:nth-child(1) { transition-delay: 0.05s; }
+.hero.revealed .hero-content > *:nth-child(2) { transition-delay: 0.13s; }
+.hero.revealed .hero-content > *:nth-child(3) { transition-delay: 0.21s; }
+.hero.revealed .hero-content > *:nth-child(4) { transition-delay: 0.29s; }
+.hero.revealed .hero-content > *:nth-child(5) { transition-delay: 0.37s; }
+
+.site-header.pre-reveal .header-inner {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+.site-header.revealed .header-inner {
+  opacity: 1;
+  transform: none;
+  transition: opacity 0.6s ease 0.1s, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1) 0.1s;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero.pre-reveal .hero-content > *,
+  .site-header.pre-reveal .header-inner {
+    opacity: 1;
+    transform: none;
+  }
+}
 .hero-subtitle {
   font-size: clamp(16px, 1.6vw, 20px);
   font-weight: 500;
