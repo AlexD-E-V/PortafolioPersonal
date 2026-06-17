@@ -1,0 +1,7 @@
+# robots.txt — Alex D.E.V.
+# Portafolio público: se permite el rastreo de todo el sitio.
+User-agent: *
+Allow: /
+
+# Al publicar con dominio, descomenta y pon la URL real del sitemap:
+# Sitemap: https://TU-DOMINIO/sitemap.xml

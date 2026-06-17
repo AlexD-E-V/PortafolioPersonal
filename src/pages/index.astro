@@ -1,6 +1,15 @@
 ---
 import '../styles/global.css';
 import App from '../components/App.jsx';
+
+// Dominio del sitio. Al publicar, pon aquí la URL (ej. 'https://alexdev.com')
+// y og:url / og:image se vuelven absolutas automáticamente (requerido por
+// algunas plataformas para mostrar el preview).
+const SITE_URL = '';
+const OG_IMAGE = SITE_URL + '/brand/og-image.png';
+const OG_TITLE = 'Alex D.E.V. — Full Stack Developer';
+const OG_DESC =
+  'Portafolio de Alex D.E.V.: desarrollo web, apps, videojuegos y consultoría técnica. Cosmos + Código.';
 ---
 
 <!doctype html>
@@ -8,11 +17,29 @@ import App from '../components/App.jsx';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link rel="icon" type="image/png" href="/brand/peque-sinfondo.png" />
+    <link rel="apple-touch-icon" href="/brand/peque.png" />
+    <meta name="theme-color" content="#070B14" />
+
     <title>ALEX D.E.V. — Full Stack Developer</title>
-    <meta
-      name="description"
-      content="Portafolio de ALEX D.E.V.: desarrollo web, apps, videojuegos y consultoría técnica. Cosmos + Código."
-    />
+    <meta name="description" content={OG_DESC} />
+
+    {/* Open Graph (WhatsApp, LinkedIn, Facebook, Telegram, Discord) */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={OG_TITLE} />
+    <meta property="og:description" content={OG_DESC} />
+    <meta property="og:image" content={OG_IMAGE} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    {SITE_URL && <meta property="og:url" content={SITE_URL} />}
+    <meta property="og:site_name" content="Alex D.E.V." />
+
+    {/* Twitter / X */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={OG_TITLE} />
+    <meta name="twitter:description" content={OG_DESC} />
+    <meta name="twitter:image" content={OG_IMAGE} />
 
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />

@@ -1,0 +1,82 @@
+---
+import '../styles/global.css';
+---
+
+<!doctype html>
+<html lang="es" data-font="geist">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/png" href="/brand/peque-sinfondo.png" />
+    <link rel="apple-touch-icon" href="/brand/peque.png" />
+    <meta name="theme-color" content="#070B14" />
+    <meta name="robots" content="noindex" />
+    <title>404 — Alex D.E.V.</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600&family=Geist+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <div class="nebula-bg" aria-hidden="true"></div>
+    <main class="notfound">
+      <img class="nf-logo" src="/brand/iso.png" alt="Alex D.E.V." width="82" height="60" />
+      <p class="nf-code">404</p>
+      <h1 class="nf-title">Te saliste de órbita</h1>
+      <p class="nf-desc">
+        La página que buscas no existe o cambió de coordenadas.
+        <br />
+        <span class="nf-en">The page you're looking for doesn't exist or has moved.</span>
+      </p>
+      <a class="btn btn-primary" href="/">Volver al inicio</a>
+    </main>
+
+    <style>
+      .notfound {
+        position: relative;
+        z-index: 1;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 18px;
+        padding: 40px 24px;
+      }
+      .nf-logo {
+        height: 60px;
+        width: auto;
+        margin-bottom: 8px;
+        opacity: 0.95;
+      }
+      .nf-code {
+        font-family: var(--font-mono);
+        font-size: clamp(72px, 16vw, 132px);
+        font-weight: 500;
+        line-height: 1;
+        color: var(--blue-light);
+        letter-spacing: 0.04em;
+        text-shadow: 0 0 36px var(--glow-blue);
+      }
+      .nf-title {
+        font-size: clamp(26px, 4vw, 40px);
+        font-weight: 600;
+        letter-spacing: -0.02em;
+      }
+      .nf-desc {
+        color: var(--text-1);
+        max-width: 46ch;
+        text-wrap: pretty;
+        margin-bottom: 8px;
+      }
+      .nf-en {
+        color: var(--text-2);
+        font-size: 14px;
+      }
+    </style>
+  </body>
+</html>

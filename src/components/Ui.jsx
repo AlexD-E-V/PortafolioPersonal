@@ -42,6 +42,13 @@ export function Bold({ text }) {
   return text.split('**').map((part, i) => (i % 2 ? <strong key={i}>{part}</strong> : part));
 }
 
+/* Colorea la marca "D.E.V." en azul (como el logo: "Alex" claro + "D.E.V." azul) */
+export function BrandName({ text }) {
+  return text.split(/(D\.E\.V\.)/).map((part, i) =>
+    part === 'D.E.V.' ? <span key={i} className="brand-dev">{part}</span> : part
+  );
+}
+
 /* ---------- Boot sequence (primera visita) ---------- */
 export function BootSequence({ lang, onDone }) {
   const [visible, setVisible] = React.useState(false);
@@ -195,10 +202,8 @@ export function Header({ lang, setLang, status, activeSection, logoStyle }) {
     <React.Fragment>
       <header className={'site-header' + (scrolled ? ' scrolled' : '')}>
         <div className="header-inner">
-          <a className="logo" href="#inicio" onClick={(e) => { e.preventDefault(); goTo('inicio'); }} aria-label="Inicio">
-            {logoStyle === 'ae'
-              ? (<span><span className="logo-bracket">[</span>AE<span className="logo-bracket">]</span></span>)
-              : (<span>Alex<span className="logo-bracket">_</span>D.E.V.</span>)}
+          <a className="logo" href="#inicio" onClick={(e) => { e.preventDefault(); goTo('inicio'); }} aria-label="Alex D.E.V. — Inicio">
+            <img className="logo-img" src="/brand/iso.png" alt="Alex D.E.V." width="49" height="36" />
           </a>
           <nav className="nav-desktop" aria-label="Navegación principal">{navLinks()}</nav>
           <div className="lang-toggle" role="group" aria-label="Idioma">
@@ -250,7 +255,7 @@ export function Hero({ lang, status, onPlanetClick, reducedMotion }) {
           <span className="status-dot" style={{ background: meta.color, '--dot-glow': meta.glow }}></span>
           <span>{t.heroBadge[status]}</span>
         </div>
-        <h1 className="hero-title">{t.hero.title}</h1>
+        <h1 className="hero-title"><BrandName text={t.hero.title} /></h1>
         <p className="hero-subtitle">{t.hero.subtitle}</p>
         <p className="hero-desc">{t.hero.desc}</p>
         <div className="hero-actions">
@@ -328,7 +333,7 @@ export function About({ lang }) {
         </div>
         <div className="about-text">
           <span className="section-label">{t.label}</span>
-          <h2 className="section-title">{t.title}</h2>
+          <h2 className="section-title"><BrandName text={t.title} /></h2>
           <p><Bold text={t.p1} /></p>
           <p>{t.p2}</p>
           <div className="stats-row">

@@ -41,8 +41,10 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
     const wrap = wrapRef.current;
     if (!wrap) return;
 
-    const isMobile = window.matchMedia('(max-width: 1023px)').matches;
-    const planets = isMobile ? HERO_PLANETS.slice(0, 5) : HERO_PLANETS;
+    // Solo el teléfono (≤767px) usa el layout apilado/reducido; tablet y
+    // desktop comparten el comportamiento de fondo ambiental imponente.
+    const isPhone = window.matchMedia('(max-width: 767px)').matches;
+    const planets = isPhone ? HERO_PLANETS.slice(0, 5) : HERO_PLANETS;
     const maxRadius = Math.max(...planets.map((p) => p.radius));
 
     const scene = new THREE.Scene();
@@ -84,6 +86,28 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
     }));
     goldGlow.scale.set(1.9, 1.9, 1);
     system.add(goldGlow);
+
+    // --- Logo en el centro del sistema (idea original: el logo vive en el núcleo) ---
+    // Oculto por defecto; aparece (fade in + pulso) al hacer hover sobre el núcleo.
+    const logoTex = new THREE.TextureLoader().load('/brand/iso.png');
+    if ('colorSpace' in logoTex) logoTex.colorSpace = THREE.SRGBColorSpace;
+    const LOGO_RATIO = 292 / 214; // proporción del iso.png
+    const LOGO_H = 1.3;
+    const logoSprite = new THREE.Sprite(new THREE.SpriteMaterial({
+      map: logoTex, transparent: true, depthWrite: false, depthTest: false, opacity: 0
+    }));
+    logoSprite.scale.set(LOGO_H * LOGO_RATIO, LOGO_H, 1);
+    logoSprite.position.y = 0.038;
+    logoSprite.position.x = -0.014 // centra el contenido visual del PNG sobre el núcleo
+    logoSprite.renderOrder = 10; // siempre por encima del glow
+    system.add(logoSprite);
+
+    // Esfera invisible: área de hover del núcleo que revela el logo
+    const coreHit = new THREE.Mesh(
+      new THREE.SphereGeometry(1.1, 16, 16),
+      new THREE.MeshBasicMaterial({ colorWrite: false, depthWrite: false })
+    );
+    system.add(coreHit);
 
     // Disco de acreción sutil (anillo plano)
     const disc = new THREE.Mesh(
@@ -135,7 +159,7 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
     });
 
     // --- Starfield ---
-    if (!isMobile) {
+    if (!isPhone) {
       const starGeo = new THREE.BufferGeometry();
       const N = 260;
       const pos = new Float32Array(N * 3);
@@ -160,6 +184,7 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
     const mouseNDC = new THREE.Vector2(-10, -10);
     let parallax = { x: 0, y: 0 }, targetParallax = { x: 0, y: 0 };
     let hovered = null;
+    let logoOpacity = 0;
 
     function resize() {
       const w = wrap.clientWidth, h = wrap.clientHeight;
@@ -171,9 +196,19 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
       // visible y se desplaza para tocar el borde derecho.
       const halfH = Math.tan((camera.fov * Math.PI) / 360) * camera.position.z;
       const halfW = halfH * camera.aspect;
-      const fitScale = Math.min(1, (halfW * (isMobile ? 0.92 : 0.62)) / maxRadius);
+      // Sistema grande e imponente; las órbitas pueden salirse de los
+      // márgenes (los planetas reaparecen al girar).
+      // - Teléfono: centrado en su propio espacio apilado.
+      // - Tablet/desktop: núcleo en el centro-derecha, desbordando por la
+      //   derecha; lo que cae a la izquierda queda detrás del texto.
+      // Se reevalúa el breakpoint EN CADA resize (no solo al montar) para
+      // que escala/posición sigan correctas al redimensionar o rotar.
+      const phoneNow = window.matchMedia('(max-width: 767px)').matches;
+      const fitScale = phoneNow
+        ? (halfW * 1.55) / maxRadius
+        : (halfW * 1.0) / maxRadius;
       system.scale.setScalar(fitScale);
-      system.position.x = isMobile ? 0 : Math.max(0, halfW * 0.98 - maxRadius * fitScale);
+      system.position.x = phoneNow ? 0 : halfW * 0.46;
     }
     resize();
     const ro = new ResizeObserver(resize);
@@ -183,7 +218,7 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
       const r = wrap.getBoundingClientRect();
       mouseNDC.x = ((e.clientX - r.left) / r.width) * 2 - 1;
       mouseNDC.y = -((e.clientY - r.top) / r.height) * 2 + 1;
-      if (!isMobile) {
+      if (!isPhone) {
         targetParallax.x = mouseNDC.x * 0.12;
         targetParallax.y = mouseNDC.y * 0.08;
       }
@@ -217,7 +252,9 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
       if (!reducedMotion) t += dt;
 
       system.rotation.y = t * 0.045; // ~vuelta completa lenta
-      core.scale.setScalar(1 + Math.sin(t * 1.4) * 0.03);
+      const corePulse = 1 + Math.sin(t * 1.4) * 0.03;
+      core.scale.setScalar(corePulse);
+      logoSprite.scale.set(LOGO_H * LOGO_RATIO * corePulse, LOGO_H * corePulse, 1);
       coreGlow.scale.setScalar(3.4 + Math.sin(t * 1.1) * 0.18);
       disc.rotation.z = t * 0.1;
 
@@ -235,6 +272,12 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
 
       // Hover por raycasting
       raycaster.setFromCamera(mouseNDC, camera);
+
+      // Hover sobre el núcleo → revela el logo con fade (in/out a opacidad 0)
+      const coreHover = raycaster.intersectObject(coreHit, false).length > 0;
+      logoOpacity += ((coreHover ? 1 : 0) - logoOpacity) * 0.12;
+      logoSprite.material.opacity = logoOpacity < 0.005 ? 0 : logoOpacity;
+
       const hits = raycaster.intersectObjects(planetMeshes, false);
       const hit = hits.length ? hits[0].object : null;
       if (hit !== hovered) {

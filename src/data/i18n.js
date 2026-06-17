@@ -17,7 +17,7 @@ export const I18N = {
       closed: 'No tomando proyectos por ahora'
     },
     hero: {
-      title: 'ALEX D.E.V.',
+      title: 'Alex D.E.V.',
       subtitle: 'Full Stack Developer',
       desc: 'Diseño y construyo aplicaciones, sitios web y videojuegos donde la lógica del código se cruza con la curiosidad por explorar nuevas formas de crear.',
       ctaPrimary: 'Ver proyectos',

@@ -13,6 +13,7 @@ import { FaGithub, FaLinkedin, FaBehance } from 'react-icons/fa6';
 export const CONTACT_EMAIL = 'alexenriquezvera@gmail.com';
 export const GITHUB_URL = 'https://github.com/AlexD-E-V';
 export const BEHANCE_URL = 'https://www.behance.net/alexenriquez';
+export const LINKEDIN_URL = 'https://www.linkedin.com/in/alex-d-e-v';
 
 /* CV por idioma. Coloca los PDFs en public/cv/ con estos nombres
    exactos (al publicar el sitio se sirven desde la raíz). El botón
@@ -120,7 +121,7 @@ export function ContactSection({ lang }) {
             <a className="contact-method" href={GITHUB_URL} target="_blank" rel="noopener noreferrer">
               <span className="m-icon"><FaGithub size={16} aria-hidden="true" /></span>GitHub
             </a>
-            <a className="contact-method" href="#" onClick={(e) => e.preventDefault()}>
+            <a className="contact-method" href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer">
               <span className="m-icon"><FaLinkedin size={16} aria-hidden="true" /></span>LinkedIn
             </a>
             <a className="contact-method" href={CV_URLS[lang]} download>
@@ -196,7 +197,7 @@ export function Footer({ lang }) {
     <footer className="site-footer">
       <div className="footer-inner">
         <div>
-          <p className="footer-name">Alex D.E.V.</p>
+          <img className="footer-logo" src="/brand/horizontal.png" alt="Alex D.E.V." width="167" height="48" />
           <p className="footer-sub">{t.footer.tagline}</p>
           <p className="footer-copy">{t.footer.copyright}</p>
         </div>
@@ -212,7 +213,7 @@ export function Footer({ lang }) {
           <h5>{t.footer.social}</h5>
           <div className="footer-social">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub"><FaGithub size={17} aria-hidden="true" /></a>
-            <a href="#" onClick={(e) => e.preventDefault()} aria-label="LinkedIn"><FaLinkedin size={17} aria-hidden="true" /></a>
+            <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><FaLinkedin size={17} aria-hidden="true" /></a>
             <a href={BEHANCE_URL} target="_blank" rel="noopener noreferrer" aria-label="Behance"><FaBehance size={17} aria-hidden="true" /></a>
             <a href={'mailto:' + CONTACT_EMAIL} aria-label="Email"><Mail size={17} aria-hidden="true" /></a>
           </div>

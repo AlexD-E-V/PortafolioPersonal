@@ -201,13 +201,17 @@ section.site-section {
   padding: 0 32px; height: 68px;
 }
 .logo {
-  font-family: var(--font-mono);
-  font-size: 17px; font-weight: 500;
-  color: var(--text-0);
-  letter-spacing: 0.02em;
+  display: flex; align-items: center;
   flex-shrink: 0;
 }
-.logo .logo-bracket { color: var(--blue); }
+.logo-img {
+  height: 36px; width: auto; display: block;
+  transition: filter 0.25s ease, transform 0.25s ease;
+}
+.logo:hover .logo-img {
+  filter: drop-shadow(0 0 10px var(--glow-blue));
+  transform: translateY(-1px);
+}
 
 .nav-desktop {
   display: flex; gap: 4px; margin-left: auto;
@@ -350,6 +354,8 @@ section.site-section {
   line-height: 1.04;
   margin-bottom: 18px;
 }
+/* Marca "D.E.V." en azul, como el logo (Alex claro + D.E.V. azul) */
+.brand-dev { color: var(--blue-light); }
 .hero-subtitle {
   font-size: clamp(16px, 1.6vw, 20px);
   font-weight: 500;
@@ -369,6 +375,10 @@ section.site-section {
   position: absolute;
   inset: 0;
   z-index: 1;
+  /* Desvanece la parte baja para que el sistema respire hacia "Sobre mí"
+     en vez de cortarse de golpe en el borde del hero. */
+  -webkit-mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 78%, transparent 100%);
 }
 .hero-3d-wrap canvas { display: block; }
 .hero-tooltip {
@@ -389,6 +399,32 @@ section.site-section {
 
 @media (max-width: 1023px) {
   .hero-content { padding: 120px 20px 48px; }
+}
+
+/* Solo móvil: el sistema 3D se apila DEBAJO del contenido del hero
+   (en tablet y desktop sigue siendo capa de fondo ambiental). */
+@media (max-width: 767px) {
+  .hero {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .hero-content {
+    order: 1;
+    pointer-events: auto;
+    padding: 110px 20px 8px;
+  }
+  .hero-3d-wrap {
+    order: 2;
+    position: relative;
+    inset: auto;
+    width: 100%;
+    height: 52vh;
+    min-height: 320px;
+    flex-shrink: 0;
+    /* En móvil el sistema vive en su propio espacio; sin máscara. */
+    -webkit-mask-image: none;
+    mask-image: none;
+  }
 }
 
 /* ---------- Placeholders de imagen ---------- */
@@ -1124,6 +1160,7 @@ section.site-section {
   gap: 40px;
 }
 .footer-name { font-weight: 600; font-size: 17px; }
+.footer-logo { height: 48px; width: auto; display: block; margin-bottom: 4px; }
 .footer-sub { font-size: 13.5px; color: var(--text-2); margin-top: 6px; }
 .footer-col h5 {
   font-family: var(--font-mono);
