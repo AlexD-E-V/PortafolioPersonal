@@ -123,9 +123,12 @@ export function ProjectCard({ project, lang, index, onOpen }) {
       <div className="project-body">
         <h3 className="project-title">{c.title}</h3>
         <p className="project-desc">{c.desc}</p>
-        <div className="project-tech">
-          {project.techLabels.map((tech) => <span className="badge-mono" key={tech}>{tech}</span>)}
-        </div>
+        {/* sin techLabels no se renderiza la fila: evita un hueco por el gap */}
+        {project.techLabels.length > 0 && (
+          <div className="project-tech">
+            {project.techLabels.map((tech) => <span className="badge-mono" key={tech}>{tech}</span>)}
+          </div>
+        )}
         <div className="project-footer">
           {/* aria-label incluye el título: "Ver detalles" a secas se repite en
               todas las cards y no dice nada fuera de contexto. Contiene el
@@ -364,12 +367,16 @@ export function CaseStudyModal({ lang, projectId, onClose, onNavigate }) {
               <p>{c.solution}</p>
             </div>
           )}
-          <div className="cs-block">
-            <h4>{t.stack}</h4>
-            <div className="project-tech">
-              {project.tech.map((id) => <span className="badge-mono" key={id}>{TECH_LABELS[id] || id}</span>)}
+          {/* Se omite si el proyecto aún no tiene stack definido, igual que
+              el resto de bloques de case study sin contenido. */}
+          {project.tech.length > 0 && (
+            <div className="cs-block">
+              <h4>{t.stack}</h4>
+              <div className="project-tech">
+                {project.tech.map((id) => <span className="badge-mono" key={id}>{TECH_LABELS[id] || id}</span>)}
+              </div>
             </div>
-          </div>
+          )}
           {project.wip ? (
             <div className="cs-block">
               <div className="cs-soon">{t.comingSoon}</div>

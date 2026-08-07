@@ -90,6 +90,9 @@ El sitio es **estático (SSG)**; Vercel detecta Astro solo (build `astro build`,
 
 ## Pendientes (puntos abiertos)
 
+> Las **decisiones aplazadas** (con el porqué de cada una, para no rediscutirlas) viven
+> en [`PENDIENTES.md`](PENDIENTES.md).
+
 **SEO / difusión:**
 - **Google Search Console:** registrar la propiedad `https://alex-d-e-v.vercel.app/` (verificación por meta tag o archivo), enviar el sitemap (`sitemap-index.xml`) y solicitar indexación. Acelera aparecer en Google; opcional para un portafolio de referidos.
 - **Renderizado client-only (limitación conocida):** la UI se monta con `client:only="react"`, así que el HTML servido lleva las metaetiquetas (title/description/OG ✓) pero el `<body>` se rellena por JS — sin `<h1>` ni texto en el HTML crudo. Google renderiza JS y termina indexando, pero crawlers más simples (algunos sociales/Bing) ven poco. Mejorarlo implica pasar a `client:load` con todo el acceso a `window`/`localStorage` guardado para SSR — refactor mayor, baja prioridad para este sitio.

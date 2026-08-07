@@ -1,7 +1,9 @@
 /* ============================================================
-   Experiencia — iteración v1.1.0
-   Trayectoria 2018 → presente (más reciente primero).
-   Futuras entradas posteriores a 2025: ver README, pendientes.
+   Experiencia — trayectoria 2018 → presente (más reciente primero).
+   El orden lo marca la FECHA DE INICIO; la entrada en curso
+   ("presente") va primera por ser la vigente.
+   `tech`: array de strings de display (badges bajo la tarjeta).
+   Vacío = no se renderiza la fila de badges.
    ============================================================ */
 
 export const EXPERIENCE = [
@@ -12,10 +14,32 @@ export const EXPERIENCE = [
     en: { role: 'Full-Stack Developer', org: 'Webs, apps, games, XR', desc: 'Building complete products — from the initial idea to the final deliverable — combining design and code across web, mobile, games and XR.' }
   },
   {
-    date: '2024 — 2025', dateEn: '2024 — 2025',
+    date: 'May 2026 — Jul 2026', dateEn: 'May 2026 — Jul 2026',
     tech: [],
-    es: { role: 'Desarrollador Independiente', org: 'SPACE DEV', desc: 'Desarrollo de sitios web y videojuegos para clientes locales bajo marca propia.' },
-    en: { role: 'Independent Developer', org: 'SPACE DEV', desc: 'Building websites and games for local clients under my own brand.' }
+    es: {
+      role: 'Desarrollador Web y Técnico',
+      org: 'IDCOM — Ingeniería y Construcciones Metalmecánicas',
+      desc: 'Responsable técnico de la empresa. Desarrollo y mantenimiento del sitio corporativo idcom.com.ec: landing pages de servicios, catálogo en vista modal, formulario de contacto con validación, integración de Google Analytics con consentimiento de cookies, optimización de velocidad de carga y SEO técnico (metadatos, Open Graph, imágenes en WebP).'
+    },
+    en: {
+      role: 'Web & Technical Developer',
+      org: 'IDCOM — Metalwork Engineering & Construction',
+      desc: 'Technical lead for the company. Development and maintenance of the corporate site idcom.com.ec: service landing pages, catalogue in modal view, validated contact form, Google Analytics integration with cookie consent, load-speed optimisation and technical SEO (metadata, Open Graph, WebP images).'
+    }
+  },
+  {
+    date: 'Ene 2025 — Ene 2026', dateEn: 'Jan 2025 — Jan 2026',
+    tech: [],
+    es: {
+      role: 'Desarrollador Web y de Sistemas',
+      org: 'CECP — Centro de Especialidades Médicas',
+      desc: 'Responsable de la evolución digital de la marca: desarrollo del sitio cecponline.com y sus landing pages comerciales, con SEO local, fichas de especialidades con modales, integración de reseñas de Google y captación de citas por WhatsApp. Adicionalmente, desarrollo de la aplicación móvil/PC y administración de la plataforma EAGLES VISION de historias clínicas electrónicas.'
+    },
+    en: {
+      role: 'Web & Systems Developer',
+      org: 'CECP — Medical Specialties Centre',
+      desc: "Led the brand's digital evolution: development of the cecponline.com site and its commercial landing pages, with local SEO, specialty cards in modals, Google reviews integration and appointment capture through WhatsApp. Additionally, development of the mobile/PC application and administration of the EAGLES VISION electronic medical records platform."
+    }
   },
   {
     date: '2022 — 2024', dateEn: '2022 — 2024',
