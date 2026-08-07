@@ -4,7 +4,7 @@ Portafolio personal de **Alex D.E.V.**: Full Stack Developer.
 
 Sitio de una sola página con un concepto visual **"Cosmos + Código"**: hero 3D orbital como fondo ambiental, constelaciones de stack interactivas (con navegación por arrastre), proyectos filtrables con modal de detalle, y soporte bilingüe (ES/EN).
 
-> **Estado:** producto **en desarrollo (pre-1.0)** — `package.json` en `0.3.0`. El tag `v1.0` se reserva para cuando esté terminado y publicado. Las `iteración vX.Y.Z` en `docs/` son etiquetas de **plan de trabajo**, no la versión del producto.
+> **Estado:** producto **en desarrollo**, iterando sobre contenido y pulido. La versión vive **solo** en `package.json` (`3.0.0`); el footer la lee de ahí, así que para cambiarla basta con tocar ese archivo. Las `iteración vX.Y.Z` en `docs/` son etiquetas de **plan de trabajo**, no la versión del producto.
 
 ## Stack
 

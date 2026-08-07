@@ -50,12 +50,20 @@ export function ContactSection({ lang }) {
     if (!fields.message.trim()) errs.message = f.errRequired;
     else if (fields.message.trim().length < 20) errs.message = f.errMessage;
     setErrors(errs);
-    return Object.keys(errs).length === 0;
+    return errs;
   }
 
   async function onSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
+    // Al fallar, lleva el foco al primer campo con error: sin esto el usuario
+    // de teclado se queda en el botón de enviar sin saber qué pasó.
+    const errs = validate();
+    const firstError = Object.keys(errs)[0];
+    if (firstError) {
+      const el = document.getElementById('fld-' + firstError);
+      if (el) el.focus();
+      return;
+    }
     // Honeypot: si está relleno, lo trata como spam (silencioso).
     if (botRef.current && botRef.current.checked) { setSent(true); return; }
     setSendError('');
@@ -98,13 +106,24 @@ export function ContactSection({ lang }) {
     }
   }
 
-  const field = (key, label, input) => (
-    <div className={'form-field' + (errors[key] ? ' has-error' : '')}>
-      <label htmlFor={'fld-' + key}>{label}</label>
-      {input}
-      {errors[key] && <span className="field-error">{errors[key]}</span>}
-    </div>
-  );
+  /* El input llega ya construido desde el JSX de abajo; se le inyectan aquí
+     los atributos ARIA para no repetirlos en cada campo. aria-describedby
+     enlaza el mensaje de error con su input: sin él, un lector de pantalla
+     anuncia el campo pero nunca el motivo del fallo. */
+  const field = (key, label, input) => {
+    const hasError = !!errors[key];
+    const errId = 'err-' + key;
+    return (
+      <div className={'form-field' + (hasError ? ' has-error' : '')}>
+        <label htmlFor={'fld-' + key}>{label}</label>
+        {React.cloneElement(input, {
+          'aria-invalid': hasError || undefined,
+          'aria-describedby': hasError ? errId : undefined
+        })}
+        {hasError && <span className="field-error" id={errId}>{errors[key]}</span>}
+      </div>
+    );
+  };
 
   return (
     <section className="site-section" id="contacto" ref={ref}>

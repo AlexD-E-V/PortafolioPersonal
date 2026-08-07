@@ -251,26 +251,62 @@ function HeroImg({ src, alt, placeholder }) {
 }
 
 /* ---------- Modal case study ---------- */
+/* Elementos que pueden recibir foco dentro del modal (para el focus trap) */
+const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function CaseStudyModal({ lang, projectId, onClose, onNavigate }) {
   const t = I18N[lang].modal;
   const closeRef = React.useRef(null);
+  const overlayRef = React.useRef(null);
+  const boxRef = React.useRef(null);
   const project = PROJECTS.find((p) => p.id === projectId);
+
+  /* Al montar: bloquea el scroll de fondo y marca como `inert` todo lo que
+     no es el modal (header, main, footer…), para que ni el teclado ni los
+     lectores de pantalla lleguen a la página de atrás. Al cerrar, devuelve
+     el foco al elemento que abrió el modal (la card). Solo en montaje/
+     desmontaje: navegar entre proyectos no debe soltar el foco. */
+  React.useEffect(() => {
+    const opener = document.activeElement;
+    document.body.style.overflow = 'hidden';
+
+    const overlay = overlayRef.current;
+    const siblings = overlay && overlay.parentElement
+      ? Array.from(overlay.parentElement.children).filter((el) => el !== overlay)
+      : [];
+    const prevInert = siblings.map((el) => el.inert);
+    siblings.forEach((el) => { el.inert = true; });
+
+    return () => {
+      document.body.style.overflow = '';
+      siblings.forEach((el, i) => { el.inert = prevInert[i]; });
+      if (opener && typeof opener.focus === 'function') opener.focus();
+    };
+  }, []);
 
   React.useEffect(() => {
     if (!project) return;
-    document.body.style.overflow = 'hidden';
     if (closeRef.current) closeRef.current.focus();
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowRight') onNavigate(1);
       if (e.key === 'ArrowLeft') onNavigate(-1);
+      if (e.key === 'Tab') {
+        // Focus trap: el Tab hace un ciclo cerrado dentro del modal.
+        const items = boxRef.current ? boxRef.current.querySelectorAll(FOCUSABLE) : [];
+        if (!items.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     };
     window.addEventListener('keydown', onKey);
     // hash compartible
     const prevHash = window.location.hash;
     try { history.replaceState(null, '', '#proyecto-' + project.id); } catch (err) {}
     return () => {
-      document.body.style.overflow = '';
+      // El scroll del body lo gestiona el efecto de montaje: si se soltara
+      // aquí, navegar entre proyectos lo desbloquearía con el modal abierto.
       window.removeEventListener('keydown', onKey);
       try { history.replaceState(null, '', prevHash || window.location.pathname); } catch (err) {}
     };
@@ -281,8 +317,8 @@ export function CaseStudyModal({ lang, projectId, onClose, onNavigate }) {
   const catName = project.cats.map((cat) => (project.catLabels && project.catLabels[cat]) || I18N[lang].filters[cat]).join(' · ');
 
   return (
-    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="modal-box" role="dialog" aria-modal="true" aria-label={c.title}>
+    <div className="modal-overlay" ref={overlayRef} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal-box" ref={boxRef} role="dialog" aria-modal="true" aria-label={c.title}>
         <div className="modal-header">
           <button className="modal-nav-btn" onClick={() => onNavigate(-1)} aria-label={t.prev}><ChevronLeft size={20} aria-hidden="true" /></button>
           <div style={{ flex: 1, minWidth: 0 }}>
