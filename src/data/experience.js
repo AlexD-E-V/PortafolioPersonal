@@ -19,12 +19,12 @@ export const EXPERIENCE = [
     es: {
       role: 'Desarrollador Web y Técnico',
       org: 'IDCOM — Ingeniería y Construcciones Metalmecánicas',
-      desc: 'Responsable técnico de la empresa. Desarrollo y mantenimiento del sitio corporativo idcom.com.ec: landing pages de servicios, catálogo en vista modal, formulario de contacto con validación, integración de Google Analytics con consentimiento de cookies, optimización de velocidad de carga y SEO técnico (metadatos, Open Graph, imágenes en WebP).'
+      desc: 'Responsable técnico de la empresa: desarrollo y mantenimiento de landing pages, optimización de velocidad y SEO, e integración de formularios y analítica.'
     },
     en: {
       role: 'Web & Technical Developer',
       org: 'IDCOM — Metalwork Engineering & Construction',
-      desc: 'Technical lead for the company. Development and maintenance of the corporate site idcom.com.ec: service landing pages, catalogue in modal view, validated contact form, Google Analytics integration with cookie consent, load-speed optimisation and technical SEO (metadata, Open Graph, WebP images).'
+      desc: 'Technical lead for the company: development and maintenance of landing pages, load-speed and SEO optimisation, and integration of forms and analytics.'
     }
   },
   {
@@ -33,12 +33,12 @@ export const EXPERIENCE = [
     es: {
       role: 'Desarrollador Web y de Sistemas',
       org: 'CECP — Centro de Especialidades Médicas',
-      desc: 'Responsable de la evolución digital de la marca: desarrollo del sitio cecponline.com y sus landing pages comerciales, con SEO local, fichas de especialidades con modales, integración de reseñas de Google y captación de citas por WhatsApp. Adicionalmente, desarrollo de la aplicación móvil/PC y administración de la plataforma EAGLES VISION de historias clínicas electrónicas.'
+      desc: 'Evolución digital de la marca: sitio web, landing pages y aplicación móvil/PC. Administrador de la plataforma EAGLES VISION de historias clínicas electrónicas.'
     },
     en: {
       role: 'Web & Systems Developer',
       org: 'CECP — Medical Specialties Centre',
-      desc: "Led the brand's digital evolution: development of the cecponline.com site and its commercial landing pages, with local SEO, specialty cards in modals, Google reviews integration and appointment capture through WhatsApp. Additionally, development of the mobile/PC application and administration of the EAGLES VISION electronic medical records platform."
+      desc: 'Digital evolution of the brand: website, landing pages and mobile/PC application. Administrator of the EAGLES VISION electronic medical records platform.'
     }
   },
   {
