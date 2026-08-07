@@ -10,16 +10,6 @@ este archivo guarda el **contexto de las decisiones**.
 
 ## 🔴 Bloqueando contenido publicado
 
-### Stack de los proyectos IDCOM y CECP
-Ambos entraron en `src/data/projects.js` con `tech: []` y `techLabels: []`
-(marcados con `TODO(stack)`). Mientras estén vacíos:
-- la card **no muestra badges** de tecnología,
-- el modal **omite el bloque "Stack técnico"**,
-- **no suman al contador** de proyectos por estrella en la constelación.
-
-**Para cerrarlo:** añadir a `tech` los ids de `src/data/skills.js` (el array completo,
-incluidas herramientas y deploy) y a `techLabels` el subset curado que se ve en la card.
-
 ### Imágenes de IDCOM y CECP
 Faltan `cover.webp` y la galería (`1/2/3.webp`) en:
 - `public/images/projects/web/idcom/`
@@ -30,6 +20,31 @@ Mientras no existan, card y galería caen al **placeholder automático** — no 
 ---
 
 ## 🟡 Decisiones abiertas (requieren criterio del dueño)
+
+### Estrellas candidatas de la constelación — revisar en bloque
+**Aplazado el 2026-08-07.** Al definir el stack de IDCOM y CECP salieron varias
+candidatas a estrella nueva. Se decidió **no añadir ninguna por ahora** y revisarlas
+juntas más adelante, con criterio de conjunto en vez de una a una.
+
+Criterio vigente: estrella **solo** para tecnología fundamental y transferible
+(motores, SDKs, frameworks). Nada de librerías menores.
+
+| Candidata | A favor | En contra | Dónde se usa |
+|---|---|---|---|
+| **GSAP** | Estándar de facto de animación web, transferible a cualquier proyecto, encaja con el perfil creativo-técnico | Ninguno de peso; salió por querer revisar el bloque completo antes | IDCOM (`gsap` + `@gsap/react`) |
+| **Three.js** | Más fundamental aún que GSAP; mueve el sistema orbital del hero de esta misma página | Quedaría en **0 proyectos**, porque el portafolio no está listado como proyecto propio (el tooltip omite el contador con 0, así que no se ve mal) | Este portafolio (`Hero3D.jsx`) |
+| **Apache / `.htaccess`** | Habilidad real y transferible: redirects a HTTPS, host canónico, gzip, caché y cabeceras de seguridad escritos a mano. Encajaría en la categoría `deploy` junto a los hostings | Es más "operaciones" que stack de producto | IDCOM y CECP |
+| **Google Analytics 4** | Montado con consentimiento de cookies, que tiene su miga | De momento **un solo proyecto**; mejor esperar a que se repita | IDCOM |
+| **Cloudflare** | — | Aquí solo es el beacon de analítica, ni CDN ni hosting. **No** justifica estrella | IDCOM |
+
+**Descartadas de plano** (librerías menores o features de framework, no estrellas):
+`lucide-react`, `cobe`, Vite (implícito en Astro), `@astrojs/sitemap`, Astro Fonts API,
+Web3Forms (servicio), Google Ads (marketing).
+
+**Si se añade alguna**, recordar: crear la estrella en `src/data/skills.js` con sus
+coordenadas `x`/`y`, añadir sus pares a `SKILL_LINKS`, y sumar el id al `tech` de los
+proyectos que la usen (el contador se recalcula solo).
+
 
 ### Fuentes: quitar Inter y JetBrains Mono del `<link>` de Google Fonts
 **Estado: descartado por ahora, no por pereza.**

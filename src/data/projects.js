@@ -77,10 +77,10 @@ export const PROJECTS = [
     id: 'idcom',
     cats: ['web'],
     image: '/images/projects/web/idcom/cover.webp',
-    // TODO(stack): pendiente de definir. Con `tech` vacío la card no muestra
-    // badges y el modal omite el bloque "Stack técnico".
-    tech: [],
-    techLabels: [],
+    // GSAP se usa en el proyecto pero aún no es estrella de la constelación:
+    // decisión aplazada, ver PENDIENTES.md.
+    tech: ['astro', 'react', 'tailwind', 'typescript', 'ecuahosting', 'vscode', 'git', 'github'],
+    techLabels: ['Astro', 'React', 'Tailwind CSS', 'TypeScript'],
     live: 'https://idcom.com.ec',
     github: null, // producto vivo de cliente
     year: 2026,
@@ -122,9 +122,8 @@ export const PROJECTS = [
     id: 'cecp',
     cats: ['web'],
     image: '/images/projects/web/cecp/cover.webp',
-    // TODO(stack): pendiente de definir (ver nota en el proyecto idcom).
-    tech: [],
-    techLabels: [],
+    tech: ['astro', 'react', 'tailwind', 'typescript', 'hostinger', 'vscode', 'git', 'github'],
+    techLabels: ['Astro', 'React', 'Tailwind CSS', 'TypeScript'],
     live: 'https://cecponline.com',
     github: null, // producto vivo de cliente
     year: 2025,
