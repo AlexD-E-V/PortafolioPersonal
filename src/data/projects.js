@@ -84,8 +84,6 @@ export const PROJECTS = [
     live: 'https://idcom.com.ec',
     github: null, // producto vivo de cliente
     year: 2026,
-    // TODO(imágenes): subir a public/images/projects/web/idcom/
-    // Hasta entonces card y galería caen al placeholder automático.
     gallery: [
       '/images/projects/web/idcom/1.webp',
       '/images/projects/web/idcom/2.webp',
@@ -127,7 +125,6 @@ export const PROJECTS = [
     live: 'https://cecponline.com',
     github: null, // producto vivo de cliente
     year: 2025,
-    // TODO(imágenes): subir a public/images/projects/web/cecp/
     gallery: [
       '/images/projects/web/cecp/1.webp',
       '/images/projects/web/cecp/2.webp',

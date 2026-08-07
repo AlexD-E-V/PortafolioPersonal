@@ -8,17 +8,6 @@ este archivo guarda el **contexto de las decisiones**.
 
 ---
 
-## 🔴 Bloqueando contenido publicado
-
-### Imágenes de IDCOM y CECP
-Faltan `cover.webp` y la galería (`1/2/3.webp`) en:
-- `public/images/projects/web/idcom/`
-- `public/images/projects/web/cecp/`
-
-Mientras no existan, card y galería caen al **placeholder automático** — no rompe nada.
-
----
-
 ## 🟡 Decisiones abiertas (requieren criterio del dueño)
 
 ### Estrellas candidatas de la constelación — revisar en bloque
