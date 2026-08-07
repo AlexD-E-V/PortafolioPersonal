@@ -92,16 +92,14 @@ export function ProjectCard({ project, lang, index, onOpen }) {
     return () => { window.removeEventListener('scroll', check); if (timer) clearTimeout(timer); };
   }, []);
 
+  /* La card es un <article> normal (no un role="button"): antes envolvía a
+     otro botón y a un enlace, lo que es contenido interactivo anidado y deja
+     a los lectores de pantalla sin saber qué anunciar. Ahora quien hace
+     clicable toda la superficie es el botón "Ver detalles", al que el CSS le
+     estira un ::after invisible sobre la card (patrón "stretched link").
+     "Visitar" queda por encima de esa capa y sigue siendo un enlace aparte. */
   return (
-    <article
-      ref={cardRef}
-      className="project-card appear"
-      tabIndex={0}
-      role="button"
-      aria-label={c.title}
-      onClick={() => onOpen(project.id)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(project.id); } }}
-    >
+    <article ref={cardRef} className="project-card appear">
       <div className="project-img">
         <div className="badge-cat-row">
           {project.cats.map((cat) => (
@@ -125,11 +123,21 @@ export function ProjectCard({ project, lang, index, onOpen }) {
       <div className="project-body">
         <h3 className="project-title">{c.title}</h3>
         <p className="project-desc">{c.desc}</p>
-        <div className="project-tech">
-          {project.techLabels.map((tech) => <span className="badge-mono" key={tech}>{tech}</span>)}
-        </div>
+        {/* sin techLabels no se renderiza la fila: evita un hueco por el gap */}
+        {project.techLabels.length > 0 && (
+          <div className="project-tech">
+            {project.techLabels.map((tech) => <span className="badge-mono" key={tech}>{tech}</span>)}
+          </div>
+        )}
         <div className="project-footer">
-          <button className="project-link" onClick={(e) => { e.stopPropagation(); onOpen(project.id); }}>
+          {/* aria-label incluye el título: "Ver detalles" a secas se repite en
+              todas las cards y no dice nada fuera de contexto. Contiene el
+              texto visible, como exige WCAG 2.5.3 (Label in Name). */}
+          <button
+            className="project-link project-link-stretched"
+            aria-label={t.projects.details + ' — ' + c.title}
+            onClick={() => onOpen(project.id)}
+          >
             {t.projects.details} <ArrowRight size={15} aria-hidden="true" />
           </button>
           {/* "En proceso" lo dicta SOLO el flag wip (no la ausencia de link).
@@ -143,7 +151,6 @@ export function ProjectCard({ project, lang, index, onOpen }) {
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
               aria-label={t.projects.visit + ' — ' + c.title}
             >
               {t.projects.visit} <ExternalLink size={14} aria-hidden="true" />
@@ -251,26 +258,62 @@ function HeroImg({ src, alt, placeholder }) {
 }
 
 /* ---------- Modal case study ---------- */
+/* Elementos que pueden recibir foco dentro del modal (para el focus trap) */
+const FOCUSABLE = 'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
+
 export function CaseStudyModal({ lang, projectId, onClose, onNavigate }) {
   const t = I18N[lang].modal;
   const closeRef = React.useRef(null);
+  const overlayRef = React.useRef(null);
+  const boxRef = React.useRef(null);
   const project = PROJECTS.find((p) => p.id === projectId);
+
+  /* Al montar: bloquea el scroll de fondo y marca como `inert` todo lo que
+     no es el modal (header, main, footer…), para que ni el teclado ni los
+     lectores de pantalla lleguen a la página de atrás. Al cerrar, devuelve
+     el foco al elemento que abrió el modal (la card). Solo en montaje/
+     desmontaje: navegar entre proyectos no debe soltar el foco. */
+  React.useEffect(() => {
+    const opener = document.activeElement;
+    document.body.style.overflow = 'hidden';
+
+    const overlay = overlayRef.current;
+    const siblings = overlay && overlay.parentElement
+      ? Array.from(overlay.parentElement.children).filter((el) => el !== overlay)
+      : [];
+    const prevInert = siblings.map((el) => el.inert);
+    siblings.forEach((el) => { el.inert = true; });
+
+    return () => {
+      document.body.style.overflow = '';
+      siblings.forEach((el, i) => { el.inert = prevInert[i]; });
+      if (opener && typeof opener.focus === 'function') opener.focus();
+    };
+  }, []);
 
   React.useEffect(() => {
     if (!project) return;
-    document.body.style.overflow = 'hidden';
     if (closeRef.current) closeRef.current.focus();
     const onKey = (e) => {
       if (e.key === 'Escape') onClose();
       if (e.key === 'ArrowRight') onNavigate(1);
       if (e.key === 'ArrowLeft') onNavigate(-1);
+      if (e.key === 'Tab') {
+        // Focus trap: el Tab hace un ciclo cerrado dentro del modal.
+        const items = boxRef.current ? boxRef.current.querySelectorAll(FOCUSABLE) : [];
+        if (!items.length) return;
+        const first = items[0], last = items[items.length - 1];
+        if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+        else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+      }
     };
     window.addEventListener('keydown', onKey);
     // hash compartible
     const prevHash = window.location.hash;
     try { history.replaceState(null, '', '#proyecto-' + project.id); } catch (err) {}
     return () => {
-      document.body.style.overflow = '';
+      // El scroll del body lo gestiona el efecto de montaje: si se soltara
+      // aquí, navegar entre proyectos lo desbloquearía con el modal abierto.
       window.removeEventListener('keydown', onKey);
       try { history.replaceState(null, '', prevHash || window.location.pathname); } catch (err) {}
     };
@@ -281,8 +324,8 @@ export function CaseStudyModal({ lang, projectId, onClose, onNavigate }) {
   const catName = project.cats.map((cat) => (project.catLabels && project.catLabels[cat]) || I18N[lang].filters[cat]).join(' · ');
 
   return (
-    <div className="modal-overlay" onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div className="modal-box" role="dialog" aria-modal="true" aria-label={c.title}>
+    <div className="modal-overlay" ref={overlayRef} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
+      <div className="modal-box" ref={boxRef} role="dialog" aria-modal="true" aria-label={c.title}>
         <div className="modal-header">
           <button className="modal-nav-btn" onClick={() => onNavigate(-1)} aria-label={t.prev}><ChevronLeft size={20} aria-hidden="true" /></button>
           <div style={{ flex: 1, minWidth: 0 }}>
@@ -324,12 +367,16 @@ export function CaseStudyModal({ lang, projectId, onClose, onNavigate }) {
               <p>{c.solution}</p>
             </div>
           )}
-          <div className="cs-block">
-            <h4>{t.stack}</h4>
-            <div className="project-tech">
-              {project.tech.map((id) => <span className="badge-mono" key={id}>{TECH_LABELS[id] || id}</span>)}
+          {/* Se omite si el proyecto aún no tiene stack definido, igual que
+              el resto de bloques de case study sin contenido. */}
+          {project.tech.length > 0 && (
+            <div className="cs-block">
+              <h4>{t.stack}</h4>
+              <div className="project-tech">
+                {project.tech.map((id) => <span className="badge-mono" key={id}>{TECH_LABELS[id] || id}</span>)}
+              </div>
             </div>
-          </div>
+          )}
           {project.wip ? (
             <div className="cs-block">
               <div className="cs-soon">{t.comingSoon}</div>

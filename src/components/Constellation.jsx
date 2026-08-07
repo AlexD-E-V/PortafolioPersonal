@@ -65,6 +65,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       canvas.style.width = W + 'px'; canvas.style.height = H + 'px';
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
       A.pan = clampPan(A.pan);
+      scheduleDraw();
     }
     resize();
     // Pan inicial centrado en el espacio virtual (solo la primera vez:
@@ -121,6 +122,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       canvas.setPointerCapture(e.pointerId);
       canvas.style.cursor = 'grabbing';
       setTooltip(null);
+      scheduleDraw();
     }
     function onPointerMove(e) {
       if (!panning) return;
@@ -133,6 +135,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       const vInst = (-(e.clientX - lastX) / dt) * 16;
       A.vel = A.vel * 0.6 + vInst * 0.4;
       lastX = e.clientX; lastT = e.timeStamp;
+      scheduleDraw();
     }
     function onPointerUp(e) {
       if (!panning) return;
@@ -141,6 +144,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       const r = canvas.getBoundingClientRect();
       setIdleCursor(starAt(e.clientX - r.left, e.clientY - r.top));
       // A.vel se conserva → el loop de animación aplica la inercia.
+      scheduleDraw();
     }
 
     function onMove(e) {
@@ -151,11 +155,12 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
         A.hovered = s;
         setIdleCursor(s);
         showTooltip(s);
+        scheduleDraw(); // el hover cambia alphas/escalas: hay que repintar
       } else if (s) {
         showTooltip(s); // reposicionar si hubo resize/pan
       }
     }
-    function onLeave() { A.hovered = null; setTooltip(null); canvas.style.cursor = ''; }
+    function onLeave() { A.hovered = null; setTooltip(null); canvas.style.cursor = ''; scheduleDraw(); }
     function onClick(e) {
       if (panMoved) { panMoved = false; return; } // fue un arrastre, no un click
       const r = canvas.getBoundingClientRect();
@@ -165,6 +170,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
         // primer tap: tooltip; segundo tap: filtrar
         A.hovered = s;
         showTooltip(s);
+        scheduleDraw();
         return;
       }
       onStarClick && onStarClick(s);
@@ -180,7 +186,17 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
     canvas.addEventListener('click', onClick);
 
     let running = true;
-    const io = new IntersectionObserver(([en]) => { running = en.isIntersecting; });
+    /* Con reduced-motion el titileo se congela y el lienzo solo cambia por
+       interacción (hover, filtro, arrastre). En vez de repintar 60 veces por
+       segundo, el bucle se detiene y se reanuda bajo demanda; sigue corriendo
+       solo mientras algo esté interpolando (ver final de draw()). */
+    function scheduleDraw() {
+      if (reducedMotion && A.raf === null) A.raf = requestAnimationFrame(draw);
+    }
+    const io = new IntersectionObserver(([en]) => {
+      running = en.isIntersecting;
+      if (running) scheduleDraw();
+    });
     io.observe(wrap);
 
     const linkedTo = (id) => SKILL_LINKS
@@ -188,7 +204,9 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       .map((l) => (l[0] === id ? l[1] : l[0]));
 
     function draw() {
-      A.raf = requestAnimationFrame(draw);
+      // Con reduced-motion no se encadena: al final del frame se decide si
+      // hace falta otro (algo interpolando, inercia o arrastre en curso).
+      A.raf = reducedMotion ? null : requestAnimationFrame(draw);
       if (!running) return;
       if (!reducedMotion) A.t += 0.016;
 
@@ -206,13 +224,18 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
       const byId = {};
       VISIBLE.forEach((s) => { byId[s.id] = s; });
 
-      // interpolar alphas / escalas
+      // interpolar alphas / escalas (se anota el mayor cambio del frame para
+      // saber si el lienzo ya se estabilizó y se puede dejar de dibujar)
+      let maxDelta = 0;
       VISIBLE.forEach((s) => {
         const st = A.stars[s.id];
         const tA = targetAlpha(s) * (A.hovered && A.hovered !== s && !linkedTo(A.hovered.id).includes(s.id) ? 0.55 : 1);
-        st.alpha += (tA - st.alpha) * 0.08;
+        const dA = (tA - st.alpha) * 0.08;
+        st.alpha += dA;
         const tS = A.hovered === s ? 1.35 : 1;
-        st.scale += (tS - st.scale) * 0.15;
+        const dS = (tS - st.scale) * 0.15;
+        st.scale += dS;
+        maxDelta = Math.max(maxDelta, Math.abs(dA), Math.abs(dS));
       });
 
       // líneas de conexión (solo entre estrellas habilitadas)
@@ -276,6 +299,13 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
         ctx.fillText(s.name, x, y + R + 17);
         ctx.globalAlpha = 1;
       });
+
+      // Con reduced-motion: seguir solo si queda algo en movimiento
+      // (interpolación de alpha/escala, inercia del pan o arrastre activo).
+      if (reducedMotion) {
+        const enMovimiento = maxDelta > 0.001 || Math.abs(A.vel) > 0.05 || panning;
+        if (enMovimiento) A.raf = requestAnimationFrame(draw);
+      }
     }
     draw();
 

@@ -74,6 +74,92 @@ export const PROJECTS = [
     }
   },  
   {
+    id: 'idcom',
+    cats: ['web'],
+    image: '/images/projects/web/idcom/cover.webp',
+    // GSAP se usa en el proyecto pero aún no es estrella de la constelación:
+    // decisión aplazada, ver PENDIENTES.md.
+    tech: ['astro', 'react', 'tailwind', 'typescript', 'ecuahosting', 'vscode', 'git', 'github'],
+    techLabels: ['Astro', 'React', 'Tailwind CSS', 'TypeScript'],
+    live: 'https://idcom.com.ec',
+    github: null, // producto vivo de cliente
+    year: 2026,
+    gallery: [
+      '/images/projects/web/idcom/1.webp',
+      '/images/projects/web/idcom/2.webp',
+      '/images/projects/web/idcom/3.webp'
+    ],
+    es: {
+      title: 'IDCOM',
+      desc: 'Sitio corporativo de una empresa de ingeniería y construcciones metalmecánicas.',
+      role: 'Desarrollo web y responsable técnico',
+      context: 'Cliente: IDCOM — Ingeniería y Construcciones Metalmecánicas',
+      summary: 'Sitio corporativo de IDCOM, empresa ecuatoriana de ingeniería mecánica, diseño y construcciones industriales. Presenta su catálogo de servicios —cosechadoras de camarón, reservorios de combustible, plataformas para bines, carretones de carga pesada y mantenimiento industrial— y convierte visitas en consultas comerciales.',
+      challenge: 'Traducir un catálogo industrial técnico en una web que generara consultas reales, siendo la mayoría del tráfico móvil y con conexiones no siempre buenas.',
+      solution: 'Landing pages por servicio con el catálogo en vista modal, formulario de contacto con validación y consentimiento de datos, atajo a WhatsApp para consultas urgentes, y un trabajo de fondo en velocidad de carga y SEO técnico: metadatos, Open Graph e imágenes en WebP. Analítica con Google Analytics tras consentimiento de cookies.',
+      result: [
+        'Canal de captación de consultas comerciales propio de la empresa.',
+        'Catálogo de servicios navegable y presentable ante clientes industriales.'
+      ]
+    },
+    en: {
+      title: 'IDCOM',
+      desc: 'Corporate website for a metalwork engineering and industrial construction company.',
+      role: 'Web development and technical lead',
+      context: 'Client: IDCOM — Metalwork Engineering & Construction',
+      summary: 'Corporate site for IDCOM, an Ecuadorian mechanical engineering, design and industrial construction company. It presents their service catalogue —shrimp harvesters, fuel reservoirs, bin platforms, heavy-load carts and industrial maintenance— and turns visits into commercial enquiries.',
+      challenge: 'Translating a technical industrial catalogue into a site that generated real enquiries, with mostly mobile traffic and not always good connections.',
+      solution: 'Per-service landing pages with the catalogue in a modal view, a validated contact form with data consent, a WhatsApp shortcut for urgent enquiries, and groundwork on load speed and technical SEO: metadata, Open Graph and WebP images. Analytics via Google Analytics after cookie consent.',
+      result: [
+        "The company's own channel for capturing commercial enquiries.",
+        'A browsable service catalogue presentable to industrial clients.'
+      ]
+    }
+  },
+  {
+    id: 'cecp',
+    cats: ['web'],
+    image: '/images/projects/web/cecp/cover.webp',
+    tech: ['astro', 'react', 'tailwind', 'typescript', 'hostinger', 'vscode', 'git', 'github'],
+    techLabels: ['Astro', 'React', 'Tailwind CSS', 'TypeScript'],
+    live: 'https://cecponline.com',
+    github: null, // producto vivo de cliente
+    year: 2025,
+    gallery: [
+      '/images/projects/web/cecp/1.webp',
+      '/images/projects/web/cecp/2.webp',
+      '/images/projects/web/cecp/3.webp'
+    ],
+    es: {
+      title: 'CECP — Centro de Especialidades',
+      desc: 'Sitio y captación de citas para un centro médico de Guayaquil, pionero en cardiogenética.',
+      role: 'Desarrollo web y de sistemas',
+      context: 'Cliente: CECP — Centro de Especialidades Médicas, Guayaquil',
+      summary: 'Sitio web del CECP, primer centro médico de Guayaquil especializado en cardiogenética, con siete especialidades y atención familiar. Además del sitio, el encargo incluyó la aplicación móvil/PC y la administración de EAGLES VISION, su plataforma de historias clínicas electrónicas.',
+      challenge: 'Que un paciente buscando "cardiólogo en Guayaquil" llegara al centro y agendara sin fricción, comunicando a la vez una especialidad poco conocida como la cardiogenética.',
+      solution: 'Sitio con SEO local, landing pages comerciales por especialidad y fichas de especialistas en modales con sus procedimientos. Agendamiento directo por WhatsApp e integración de reseñas de Google como prueba social. En paralelo, desarrollo de la app móvil/PC y administración de la plataforma EAGLES VISION de historias clínicas.',
+      result: [
+        'Agendamiento de citas por WhatsApp como canal directo de captación.',
+        'Posicionamiento local por especialidad médica en buscadores.',
+        'Presencia digital que comunica su diferencial en cardiogenética.'
+      ]
+    },
+    en: {
+      title: 'CECP — Medical Specialties Centre',
+      desc: 'Website and appointment capture for a Guayaquil medical centre, a pioneer in cardiogenetics.',
+      role: 'Web and systems development',
+      context: 'Client: CECP — Medical Specialties Centre, Guayaquil',
+      summary: "Website for CECP, the first medical centre in Guayaquil specialising in cardiogenetics, with seven specialties and family care. Beyond the site, the engagement included the mobile/PC application and administration of EAGLES VISION, their electronic medical records platform.",
+      challenge: 'Getting a patient searching for "cardiologist in Guayaquil" to reach the centre and book without friction, while communicating a little-known specialty such as cardiogenetics.',
+      solution: 'A site with local SEO, commercial landing pages per specialty and specialist cards in modals with their procedures. Direct booking through WhatsApp and Google reviews integration as social proof. In parallel, development of the mobile/PC app and administration of the EAGLES VISION medical records platform.',
+      result: [
+        'WhatsApp appointment booking as a direct capture channel.',
+        'Local search positioning per medical specialty.',
+        'A digital presence that communicates their cardiogenetics differentiator.'
+      ]
+    }
+  },
+  {
     id: 'rompamos-el-tabu',
     cats: ['web'],
     image: '/images/projects/web/rompamos-el-tabu/cover.webp',

@@ -1,7 +1,9 @@
 /* ============================================================
-   Experiencia — iteración v1.1.0
-   Trayectoria 2018 → presente (más reciente primero).
-   Futuras entradas posteriores a 2025: ver README, pendientes.
+   Experiencia — trayectoria 2018 → presente (más reciente primero).
+   El orden lo marca la FECHA DE INICIO; la entrada en curso
+   ("presente") va primera por ser la vigente.
+   `tech`: array de strings de display (badges bajo la tarjeta).
+   Vacío = no se renderiza la fila de badges.
    ============================================================ */
 
 export const EXPERIENCE = [
@@ -12,10 +14,32 @@ export const EXPERIENCE = [
     en: { role: 'Full-Stack Developer', org: 'Webs, apps, games, XR', desc: 'Building complete products — from the initial idea to the final deliverable — combining design and code across web, mobile, games and XR.' }
   },
   {
-    date: '2024 — 2025', dateEn: '2024 — 2025',
+    date: 'May 2026 — Jul 2026', dateEn: 'May 2026 — Jul 2026',
     tech: [],
-    es: { role: 'Desarrollador Independiente', org: 'SPACE DEV', desc: 'Desarrollo de sitios web y videojuegos para clientes locales bajo marca propia.' },
-    en: { role: 'Independent Developer', org: 'SPACE DEV', desc: 'Building websites and games for local clients under my own brand.' }
+    es: {
+      role: 'Desarrollador Web y Técnico',
+      org: 'IDCOM — Ingeniería y Construcciones Metalmecánicas',
+      desc: 'Responsable técnico de la empresa: desarrollo y mantenimiento de landing pages, optimización de velocidad y SEO, e integración de formularios y analítica.'
+    },
+    en: {
+      role: 'Web & Technical Developer',
+      org: 'IDCOM — Metalwork Engineering & Construction',
+      desc: 'Technical lead for the company: development and maintenance of landing pages, load-speed and SEO optimisation, and integration of forms and analytics.'
+    }
+  },
+  {
+    date: 'Ene 2025 — Ene 2026', dateEn: 'Jan 2025 — Jan 2026',
+    tech: [],
+    es: {
+      role: 'Desarrollador Web y de Sistemas',
+      org: 'CECP — Centro de Especialidades Médicas',
+      desc: 'Evolución digital de la marca: sitio web, landing pages y aplicación móvil/PC. Administrador de la plataforma EAGLES VISION de historias clínicas electrónicas.'
+    },
+    en: {
+      role: 'Web & Systems Developer',
+      org: 'CECP — Medical Specialties Centre',
+      desc: 'Digital evolution of the brand: website, landing pages and mobile/PC application. Administrator of the EAGLES VISION electronic medical records platform.'
+    }
   },
   {
     date: '2022 — 2024', dateEn: '2022 — 2024',

@@ -29,6 +29,7 @@ export const I18N = {
       p1: '¿Qué tal? Soy **Alex D. Enriquez Vera (D.E.V.)**, desarrollador full-stack multidisciplinario: aplicaciones web, móviles, videojuegos y consultoría técnica. Me muevo entre stacks entendiendo primero el problema, para luego elegir la herramienta más adecuada en cada caso.',
       p2: 'Prefiero proyectos donde el detalle importa: productos con identidad, experiencias interactivas y herramientas que la gente realmente usa. Trabajo de forma independiente, con comunicación directa y entregas visibles.',
       photoPh: '[ foto profesional / avatar ]',
+      photoAlt: 'Alex D. Enriquez Vera, desarrollador full-stack',
       stats: [
         { value: 15, suffix: '+', label: 'Proyectos completados' },
         { value: 25, suffix: '+', label: 'Tecnologías dominadas' },
@@ -56,7 +57,6 @@ export const I18N = {
       details: 'Ver detalles',
       visit: 'Visitar',
       inProgress: 'En proceso',
-      code: 'Ver código',
       empty: 'No hay proyectos en esta categoría todavía.',
       behance: 'Puedes visitar mis proyectos de animación, ilustración y diseño también'
     },
@@ -119,9 +119,10 @@ export const I18N = {
       tagline: 'Software Developer • Game Developer • Creative Technologist',
       quickLinks: 'Secciones',
       social: 'Redes',
-      copyright: '© 2026 — Todos los derechos reservados a Alex D.E.V.',
-      builtWith: 'Construido con Astro, React y mucho café',
-      version: 'v1.0.0'
+      // {year} lo sustituye el Footer con el año actual (no dejar fijo)
+      copyright: '© {year} — Todos los derechos reservados a Alex D.E.V.',
+      builtWith: 'Construido con Astro, React y mucho café'
+      // version: se lee de package.json en ContactFooter.jsx (no duplicar aquí)
     },
     boot: [
       'Inicializando sistema...',
@@ -158,6 +159,7 @@ export const I18N = {
       p1: "Hi! I'm **Alex D. Enriquez Vera (D.E.V.)**, a multidisciplinary full-stack developer: web and mobile applications, games and technical consulting. I move between stacks by understanding the problem first, then choosing the most suitable tool for each case.",
       p2: 'I prefer projects where detail matters: products with identity, interactive experiences and tools people actually use. I work independently, with direct communication and visible progress.',
       photoPh: '[ professional photo / avatar ]',
+      photoAlt: 'Alex D. Enriquez Vera, full-stack developer',
       stats: [
         { value: 15, suffix: '+', label: 'Projects completed' },
         { value: 25, suffix: '+', label: 'Technologies mastered' },
@@ -185,7 +187,6 @@ export const I18N = {
       details: 'View details',
       visit: 'Visit',
       inProgress: 'In progress',
-      code: 'View code',
       empty: 'No projects in this category yet.',
       behance: 'You can also check out my animation, illustration and design work'
     },
@@ -248,9 +249,10 @@ export const I18N = {
       tagline: 'Software Developer • Game Developer • Creative Technologist',
       quickLinks: 'Sections',
       social: 'Social',
-      copyright: '© 2026 — All rights reserved to Alex D.E.V.',
-      builtWith: 'Built with Astro, React and a lot of coffee',
-      version: 'v1.1.0'
+      // {year} is replaced by the Footer with the current year (never hardcode)
+      copyright: '© {year} — All rights reserved to Alex D.E.V.',
+      builtWith: 'Built with Astro, React and a lot of coffee'
+      // version: read from package.json in ContactFooter.jsx (do not duplicate here)
     },
     boot: [
       'Initializing system...',

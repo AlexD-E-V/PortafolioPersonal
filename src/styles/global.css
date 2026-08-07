@@ -49,7 +49,10 @@ body {
 
 body.cursor-hidden, body.cursor-hidden a, body.cursor-hidden button,
 body.cursor-hidden input, body.cursor-hidden select, body.cursor-hidden textarea,
-body.cursor-hidden canvas, body.cursor-hidden label {
+body.cursor-hidden canvas, body.cursor-hidden label,
+/* La capa estirada de la card de proyecto lleva su propio cursor: pointer;
+   sin esta línea reaparecería la manita nativa junto al cursor custom. */
+body.cursor-hidden .project-link-stretched::after {
   cursor: none;
 }
 
@@ -71,6 +74,10 @@ a { color: var(--blue-light); text-decoration: none; }
   transition: top 0.2s;
 }
 .skip-link:focus { top: 12px; }
+
+/* Destino del skip link: es focusable (tabIndex -1) solo para recibir el foco,
+   no es un control — el indicador visual es el propio salto de scroll. */
+main:focus, main:focus-visible { outline: none; }
 
 /* ---------- Fondo nebulosa ---------- */
 .nebula-bg {
@@ -294,9 +301,18 @@ section.site-section {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 8px;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
+  /* visibility (y no display) para que siga habiendo transición de opacidad:
+     sin ella, los botones del menú cerrado se quedan en el orden de tabulación
+     y en desktop se tabula por 9 controles invisibles. */
+  visibility: hidden;
+  /* visibility no interpola: se retrasa al cerrar (para que se vea el fundido)
+     y se aplica al instante al abrir. */
+  transition: opacity 0.3s, visibility 0s 0.3s;
 }
-.mobile-menu.open { opacity: 1; pointer-events: auto; }
+.mobile-menu.open {
+  opacity: 1; pointer-events: auto; visibility: visible;
+  transition: opacity 0.3s, visibility 0s;
+}
 .mobile-menu .nav-link { font-size: 20px; padding: 12px 20px; }
 
 @media (max-width: 1023px) {
@@ -754,6 +770,8 @@ section.site-section {
   border: 1px solid var(--border-subtle);
   border-radius: var(--r-card);
   overflow: hidden;
+  /* Referencia para el ::after estirado de .project-link-stretched */
+  position: relative;
   transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
   display: flex; flex-direction: column;
   text-align: left;
@@ -843,6 +861,33 @@ section.site-section {
   display: inline-flex; align-items: center; gap: 6px;
 }
 .project-link:hover { color: var(--text-0); }
+
+/* ---------- Card de proyecto clicable ("stretched link") ----------
+   El botón "Ver detalles" proyecta una capa invisible sobre TODA la card,
+   así que el clic funciona en cualquier punto sin necesidad de envolverlo
+   todo en otro botón (contenido interactivo anidado). */
+.project-link-stretched::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  cursor: pointer;
+}
+/* Los badges de categoría van sobre la imagen con z-index 2: sin esto
+   taparían la capa clicable y el clic sobre ellos no abriría el modal. */
+.project-img .badge-cat-row { pointer-events: none; }
+/* "Visitar" / "En proceso" deben quedar POR ENCIMA de la capa estirada
+   para seguir siendo un enlace independiente. */
+.project-footer > .project-link[href],
+.project-footer > .project-status { position: relative; z-index: 2; }
+
+/* El foco se dibuja alrededor de la card entera, no solo del botón:
+   así el indicador es idéntico al de antes de quitar el role="button". */
+.project-link-stretched:focus-visible { outline: none; }
+.project-card:has(.project-link-stretched:focus-visible) {
+  outline: 2px solid var(--blue-light);
+  outline-offset: 2px;
+}
 
 .see-more-wrap { display: flex; justify-content: center; margin-top: 40px; }
 

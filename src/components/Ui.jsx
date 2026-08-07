@@ -5,8 +5,15 @@
 
 import React from 'react';
 import { I18N } from '../data/i18n.js';
-import { Hero3D } from './Hero3D.jsx';
 import { ArrowRight, ArrowDown } from 'lucide-react';
+
+/* Hero3D arrastra Three.js (~400 kB), y es un fondo ambiental: no hace falta
+   para leer la página. Se carga en un chunk aparte para que el texto del hero
+   aparezca sin esperar a la librería 3D. El fondo entra unos instantes
+   después; en la primera visita queda tapado por el boot. */
+const Hero3D = React.lazy(() =>
+  import('./Hero3D.jsx').then((m) => ({ default: m.Hero3D }))
+);
 
 /* ---------- Hooks compartidos ---------- */
 export function useReveal() {
@@ -161,7 +168,7 @@ export const STATUS_META = {
 export function StatusPill({ lang, status }) {
   const meta = STATUS_META[status] || STATUS_META.available;
   return (
-    <div className="status-pill" title="Status — pendiente sincronizar desde Supabase">
+    <div className="status-pill">
       <span className="status-dot" style={{ background: meta.color, '--dot-glow': meta.glow }}></span>
       <span className="status-text">{I18N[lang].status[status]}</span>
     </div>
@@ -251,7 +258,11 @@ export function Hero({ lang, status, onPlanetClick, reducedMotion, revealed }) {
 
   return (
     <div className={'hero' + (revealed ? ' revealed' : ' pre-reveal')} id="inicio">
-      <Hero3D lang={lang} onPlanetClick={onPlanetClick} reducedMotion={reducedMotion} />
+      {/* fallback null: sin fondo 3D la página se ve igual, solo sin la capa
+          ambiental. No se reserva hueco porque es un absolute de fondo. */}
+      <React.Suspense fallback={null}>
+        <Hero3D lang={lang} onPlanetClick={onPlanetClick} reducedMotion={reducedMotion} />
+      </React.Suspense>
       <div className="hero-content">
         <div className="hero-badge">
           <span className="status-dot" style={{ background: meta.color, '--dot-glow': meta.glow }}></span>
@@ -323,7 +334,7 @@ export function About({ lang }) {
             <img
               className="about-photo-img"
               src={photo}
-              alt={t.photoAlt || 'Alex Enriquez Vera'}
+              alt={t.photoAlt}
               loading="lazy"
               onError={() => setImgError(true)}
             />

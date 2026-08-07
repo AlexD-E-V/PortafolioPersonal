@@ -9,6 +9,9 @@ import { I18N } from '../data/i18n.js';
 import { useReveal, NAV_IDS } from './Ui.jsx';
 import { Mail, Download, Check } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaBehance } from 'react-icons/fa6';
+// Fuente única de la versión: package.json. Antes vivía duplicada en i18n.js
+// (ES decía v1.0.0 y EN v1.1.0) y se desincronizaba sola.
+import pkg from '../../package.json';
 
 export const CONTACT_EMAIL = 'alexenriquezvera@gmail.com';
 export const GITHUB_URL = 'https://github.com/AlexD-E-V';
@@ -47,12 +50,20 @@ export function ContactSection({ lang }) {
     if (!fields.message.trim()) errs.message = f.errRequired;
     else if (fields.message.trim().length < 20) errs.message = f.errMessage;
     setErrors(errs);
-    return Object.keys(errs).length === 0;
+    return errs;
   }
 
   async function onSubmit(e) {
     e.preventDefault();
-    if (!validate()) return;
+    // Al fallar, lleva el foco al primer campo con error: sin esto el usuario
+    // de teclado se queda en el botón de enviar sin saber qué pasó.
+    const errs = validate();
+    const firstError = Object.keys(errs)[0];
+    if (firstError) {
+      const el = document.getElementById('fld-' + firstError);
+      if (el) el.focus();
+      return;
+    }
     // Honeypot: si está relleno, lo trata como spam (silencioso).
     if (botRef.current && botRef.current.checked) { setSent(true); return; }
     setSendError('');
@@ -95,13 +106,24 @@ export function ContactSection({ lang }) {
     }
   }
 
-  const field = (key, label, input) => (
-    <div className={'form-field' + (errors[key] ? ' has-error' : '')}>
-      <label htmlFor={'fld-' + key}>{label}</label>
-      {input}
-      {errors[key] && <span className="field-error">{errors[key]}</span>}
-    </div>
-  );
+  /* El input llega ya construido desde el JSX de abajo; se le inyectan aquí
+     los atributos ARIA para no repetirlos en cada campo. aria-describedby
+     enlaza el mensaje de error con su input: sin él, un lector de pantalla
+     anuncia el campo pero nunca el motivo del fallo. */
+  const field = (key, label, input) => {
+    const hasError = !!errors[key];
+    const errId = 'err-' + key;
+    return (
+      <div className={'form-field' + (hasError ? ' has-error' : '')}>
+        <label htmlFor={'fld-' + key}>{label}</label>
+        {React.cloneElement(input, {
+          'aria-invalid': hasError || undefined,
+          'aria-describedby': hasError ? errId : undefined
+        })}
+        {hasError && <span className="field-error" id={errId}>{errors[key]}</span>}
+      </div>
+    );
+  };
 
   return (
     <section className="site-section" id="contacto" ref={ref}>
@@ -199,7 +221,7 @@ export function Footer({ lang }) {
         <div>
           <img className="footer-logo" src="/brand/horizontal.png" alt="Alex D.E.V." width="167" height="48" />
           <p className="footer-sub">{t.footer.tagline}</p>
-          <p className="footer-copy">{t.footer.copyright}</p>
+          <p className="footer-copy">{t.footer.copyright.replace('{year}', new Date().getFullYear())}</p>
         </div>
         <div className="footer-col">
           <h5>{t.footer.quickLinks}</h5>
@@ -220,7 +242,7 @@ export function Footer({ lang }) {
         </div>
       </div>
       <div className="footer-bottom">
-        {t.footer.builtWith} · {t.footer.version}
+        {t.footer.builtWith} · v{pkg.version}
       </div>
     </footer>
   );
