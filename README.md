@@ -95,10 +95,11 @@ El sitio es **estático (SSG)**; Vercel detecta Astro solo (build `astro build`,
 - **Renderizado client-only (limitación conocida):** la UI se monta con `client:only="react"`, así que el HTML servido lleva las metaetiquetas (title/description/OG ✓) pero el `<body>` se rellena por JS — sin `<h1>` ni texto en el HTML crudo. Google renderiza JS y termina indexando, pero crawlers más simples (algunos sociales/Bing) ven poco. Mejorarlo implica pasar a `client:load` con todo el acceso a `window`/`localStorage` guardado para SSR — refactor mayor, baja prioridad para este sitio.
 
 **Consistencia / técnico:**
-- **Migración a Astro 6:** aviso de seguridad *moderate* (XSS en `define:vars`, server islands), *breaking change*. Tarea dedicada; riesgo real bajo para un sitio estático sin input no confiable.
+- **Migración a Astro 7:** el proyecto está en Astro 5.18; la última es la 7.x (dos majors atrás). Es lo único que cierra las 3 vulnerabilidades *high* que quedan en `npm audit` (`sharp`/libvips, `esbuild`), todas de **build-time**: sitio estático sin input no confiable → sin exposición en runtime. Tarea dedicada, no urgente. En el mismo saco: React 18→19 y three 0.158→0.185.
 - **Optimización de carga:** `App.jsx` pesa ~557 kB (Three.js); el cuello de botella vive en el hero (above the fold). Mejora con sentido: no cargar Three.js en móvil / `prefers-reduced-motion` y mostrar un fondo estático. Opcional, medir con Lighthouse antes.
 - **Repos "Ver código":** el botón ya está cableado (campo `github`). Falta poner URLs puntualmente, solo en repos que **no comprometan nada** (sin secretos, sin facilitar trampas, sin dañar productos vivos de cliente).
 - **Contenido de proyectos:** revisar y reemplazar los textos marcados `[provisional]` en `projects.js`, y subir las imágenes (`cover`/galería) que aún faltan.
+- **Space DEV oculto:** el proyecto sigue comentado en `projects.js` a la espera del **rebranding**. Se reactiva borrando las líneas de apertura y cierre del comentario que lo envuelve (marcadas en el archivo), y actualizando sus textos e imágenes con la identidad nueva.
 - **Constelación de stack:** revisar qué tecnologías mantener en `enabled: false` mientras no tengan un proyecto que las respalde.
 - **Recuento final de tecnologías dominadas:** actualizar la métrica del "Sobre Mí" cuando el stack esté cerrado.
 - **Sección de experiencia:** ampliar con entradas posteriores a 2025.
@@ -110,7 +111,6 @@ El sitio es **estático (SSG)**; Vercel detecta Astro solo (build `astro build`,
 - ~~Enlaces de contacto (email, GitHub, LinkedIn, CV)~~ — hechos.
 - ~~Logo definitivo~~ — hecho; assets de marca en `public/brand/`.
 - ~~Sección de habilidades de diseño / Behance~~ — hecho.
-- ~~Space DEV oculto~~ — reactivado en `projects.js`.
 
 ## Autor
 

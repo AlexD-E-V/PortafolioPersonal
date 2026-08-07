@@ -9,6 +9,9 @@ import { I18N } from '../data/i18n.js';
 import { useReveal, NAV_IDS } from './Ui.jsx';
 import { Mail, Download, Check } from 'lucide-react';
 import { FaGithub, FaLinkedin, FaBehance } from 'react-icons/fa6';
+// Fuente única de la versión: package.json. Antes vivía duplicada en i18n.js
+// (ES decía v1.0.0 y EN v1.1.0) y se desincronizaba sola.
+import pkg from '../../package.json';
 
 export const CONTACT_EMAIL = 'alexenriquezvera@gmail.com';
 export const GITHUB_URL = 'https://github.com/AlexD-E-V';
@@ -220,7 +223,7 @@ export function Footer({ lang }) {
         </div>
       </div>
       <div className="footer-bottom">
-        {t.footer.builtWith} · {t.footer.version}
+        {t.footer.builtWith} · v{pkg.version}
       </div>
     </footer>
   );

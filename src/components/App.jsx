@@ -154,13 +154,15 @@ export default function App() {
 
   return (
     <React.Fragment>
-      <a className="skip-link" href="#sobre">{t.skipLink}</a>
+      <a className="skip-link" href="#main">{t.skipLink}</a>
       <div className="nebula-bg" aria-hidden="true"></div>
       <StaticStarfield />
       <BootSequence lang={lang} onDone={() => setRevealed(true)} />
       <CustomCursor enabled={SITE.customCursor} />
       <Header lang={lang} setLang={setLang} status={SITE.status} activeSection={activeSection} revealed={revealed} />
-      <main id="main">
+      {/* tabIndex={-1}: sin él, algunos navegadores hacen scroll con el skip
+          link pero no mueven el foco, y el siguiente Tab vuelve al header. */}
+      <main id="main" tabIndex={-1}>
         <Hero lang={lang} status={SITE.status} onPlanetClick={onPlanetClick} reducedMotion={reducedMotion} revealed={revealed} />
         <About lang={lang} />
         <SkillsSection lang={lang} filter={skillFilter} setFilter={setSkillFilter} onStarClick={onStarClick} reducedMotion={reducedMotion} />

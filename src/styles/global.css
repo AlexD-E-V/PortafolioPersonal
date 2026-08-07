@@ -72,6 +72,10 @@ a { color: var(--blue-light); text-decoration: none; }
 }
 .skip-link:focus { top: 12px; }
 
+/* Destino del skip link: es focusable (tabIndex -1) solo para recibir el foco,
+   no es un control — el indicador visual es el propio salto de scroll. */
+main:focus, main:focus-visible { outline: none; }
+
 /* ---------- Fondo nebulosa ---------- */
 .nebula-bg {
   position: fixed; inset: 0; z-index: 0; pointer-events: none;
@@ -294,9 +298,18 @@ section.site-section {
   display: flex; flex-direction: column;
   align-items: center; justify-content: center; gap: 8px;
   opacity: 0; pointer-events: none;
-  transition: opacity 0.3s;
+  /* visibility (y no display) para que siga habiendo transición de opacidad:
+     sin ella, los botones del menú cerrado se quedan en el orden de tabulación
+     y en desktop se tabula por 9 controles invisibles. */
+  visibility: hidden;
+  /* visibility no interpola: se retrasa al cerrar (para que se vea el fundido)
+     y se aplica al instante al abrir. */
+  transition: opacity 0.3s, visibility 0s 0.3s;
 }
-.mobile-menu.open { opacity: 1; pointer-events: auto; }
+.mobile-menu.open {
+  opacity: 1; pointer-events: auto; visibility: visible;
+  transition: opacity 0.3s, visibility 0s;
+}
 .mobile-menu .nav-link { font-size: 20px; padding: 12px 20px; }
 
 @media (max-width: 1023px) {

@@ -161,7 +161,7 @@ export const STATUS_META = {
 export function StatusPill({ lang, status }) {
   const meta = STATUS_META[status] || STATUS_META.available;
   return (
-    <div className="status-pill" title="Status — pendiente sincronizar desde Supabase">
+    <div className="status-pill">
       <span className="status-dot" style={{ background: meta.color, '--dot-glow': meta.glow }}></span>
       <span className="status-text">{I18N[lang].status[status]}</span>
     </div>
@@ -323,7 +323,7 @@ export function About({ lang }) {
             <img
               className="about-photo-img"
               src={photo}
-              alt={t.photoAlt || 'Alex Enriquez Vera'}
+              alt={t.photoAlt}
               loading="lazy"
               onError={() => setImgError(true)}
             />
