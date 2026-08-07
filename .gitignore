@@ -32,3 +32,11 @@ desktop.ini
 # Logs
 *.log
 npm-debug.log*
+
+# Salida del generador de CV (los PDF publicados viven en public/cv/)
+tools/cv/CV-Alex-DEV-*.pdf
+tools/cv/cv-*.html
+
+# Cache de Python
+__pycache__/
+*.pyc
