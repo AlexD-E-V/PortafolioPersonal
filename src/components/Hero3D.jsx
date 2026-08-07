@@ -186,6 +186,22 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
     let hovered = null;
     let logoOpacity = 0;
 
+    /* --- Control del bucle de render ---
+       Sin reduced-motion: bucle continuo (el sistema orbita solo).
+       Con reduced-motion: nada se mueve por su cuenta, así que el bucle se
+       apaga y se vuelve a dibujar SOLO bajo demanda (puntero, resize,
+       volver a entrar en pantalla). Antes se renderizaba el mismo frame 60
+       veces por segundo indefinidamente, gastando batería justo en el modo
+       que existe para evitarlo.
+       Se declaran aquí arriba porque resize() ya llama a scheduleRender(). */
+    let rafId = null;
+    let running = true;
+    let needsRender = true;
+    function scheduleRender() {
+      needsRender = true;
+      if (reducedMotion && rafId === null) rafId = requestAnimationFrame(frame);
+    }
+
     function resize() {
       const w = wrap.clientWidth, h = wrap.clientHeight;
       renderer.setSize(w, h);
@@ -209,6 +225,7 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
         : (halfW * 1.0) / maxRadius;
       system.scale.setScalar(fitScale);
       system.position.x = phoneNow ? 0 : halfW * 0.46;
+      scheduleRender();
     }
     resize();
     const ro = new ResizeObserver(resize);
@@ -218,14 +235,17 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
       const r = wrap.getBoundingClientRect();
       mouseNDC.x = ((e.clientX - r.left) / r.width) * 2 - 1;
       mouseNDC.y = -((e.clientY - r.top) / r.height) * 2 + 1;
-      if (!isPhone) {
+      // El parallax de cámara es movimiento: se desactiva con reduced motion.
+      if (!isPhone && !reducedMotion) {
         targetParallax.x = mouseNDC.x * 0.12;
         targetParallax.y = mouseNDC.y * 0.08;
       }
+      scheduleRender();
     }
     function onLeave() {
       mouseNDC.set(-10, -10);
       targetParallax = { x: 0, y: 0 };
+      scheduleRender();
     }
     function onClick() {
       if (hovered) onPlanetClick && onPlanetClick(hovered.userData.id);
@@ -235,19 +255,22 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
     wrap.addEventListener('click', onClick);
 
     // --- Animación ---
-    let rafId = null;
     let t = reducedMotion ? 12 : 0;
-    let running = true;
     const clock = new THREE.Clock();
 
     const io = new IntersectionObserver(([entry]) => {
       running = entry.isIntersecting;
+      if (running) scheduleRender(); // al reaparecer, redibuja una vez
     });
     io.observe(wrap);
 
     function frame() {
-      rafId = requestAnimationFrame(frame);
+      // Con reduced motion no se encadena el siguiente frame: el bucle se
+      // detiene y scheduleRender() lo reanima cuando hay algo que redibujar.
+      rafId = reducedMotion ? null : requestAnimationFrame(frame);
       if (!running) return;
+      if (reducedMotion && !needsRender) return;
+      needsRender = false;
       const dt = Math.min(clock.getDelta(), 0.05);
       if (!reducedMotion) t += dt;
 
@@ -264,18 +287,25 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
         m.position.set(Math.cos(a) * p.radius, Math.sin(a * 0.7 + p.phase) * 0.12, Math.sin(a) * p.radius);
       });
 
-      parallax.x += (targetParallax.x - parallax.x) * 0.04;
-      parallax.y += (targetParallax.y - parallax.y) * 0.04;
-      camera.position.x = parallax.x * 3;
-      camera.position.y = 3.2 + parallax.y * 1.6;
-      camera.lookAt(0, 0, 0);
+      // El parallax necesita frames encadenados para interpolar; con reduced
+      // motion está desactivado y la cámara se queda en su posición inicial.
+      if (!reducedMotion) {
+        parallax.x += (targetParallax.x - parallax.x) * 0.04;
+        parallax.y += (targetParallax.y - parallax.y) * 0.04;
+        camera.position.x = parallax.x * 3;
+        camera.position.y = 3.2 + parallax.y * 1.6;
+        camera.lookAt(0, 0, 0);
+      }
 
       // Hover por raycasting
       raycaster.setFromCamera(mouseNDC, camera);
 
       // Hover sobre el núcleo → revela el logo con fade (in/out a opacidad 0)
       const coreHover = raycaster.intersectObject(coreHit, false).length > 0;
-      logoOpacity += ((coreHover ? 1 : 0) - logoOpacity) * 0.12;
+      // El fundido del logo necesita frames encadenados: con reduced motion
+      // (render bajo demanda) se aplica de golpe, sin transición.
+      const logoTarget = coreHover ? 1 : 0;
+      logoOpacity = reducedMotion ? logoTarget : logoOpacity + (logoTarget - logoOpacity) * 0.12;
       logoSprite.material.opacity = logoOpacity < 0.005 ? 0 : logoOpacity;
 
       const hits = raycaster.intersectObjects(planetMeshes, false);
@@ -327,6 +357,19 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
       wrap.removeEventListener('mousemove', onMove);
       wrap.removeEventListener('mouseleave', onLeave);
       wrap.removeEventListener('click', onClick);
+      // Libera geometrías, materiales y texturas: renderer.dispose() por sí
+      // solo no las suelta y quedarían retenidas en memoria de GPU al
+      // remontar el componente (pasa al cambiar reducedMotion).
+      scene.traverse((obj) => {
+        if (obj.geometry) obj.geometry.dispose();
+        const mats = obj.material
+          ? (Array.isArray(obj.material) ? obj.material : [obj.material])
+          : [];
+        mats.forEach((m) => {
+          if (m.map) m.map.dispose();
+          m.dispose();
+        });
+      });
       renderer.dispose();
       if (renderer.domElement.parentNode === wrap) wrap.removeChild(renderer.domElement);
     };

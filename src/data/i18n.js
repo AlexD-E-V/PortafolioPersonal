@@ -119,7 +119,8 @@ export const I18N = {
       tagline: 'Software Developer • Game Developer • Creative Technologist',
       quickLinks: 'Secciones',
       social: 'Redes',
-      copyright: '© 2026 — Todos los derechos reservados a Alex D.E.V.',
+      // {year} lo sustituye el Footer con el año actual (no dejar fijo)
+      copyright: '© {year} — Todos los derechos reservados a Alex D.E.V.',
       builtWith: 'Construido con Astro, React y mucho café'
       // version: se lee de package.json en ContactFooter.jsx (no duplicar aquí)
     },
@@ -248,7 +249,8 @@ export const I18N = {
       tagline: 'Software Developer • Game Developer • Creative Technologist',
       quickLinks: 'Sections',
       social: 'Social',
-      copyright: '© 2026 — All rights reserved to Alex D.E.V.',
+      // {year} is replaced by the Footer with the current year (never hardcode)
+      copyright: '© {year} — All rights reserved to Alex D.E.V.',
       builtWith: 'Built with Astro, React and a lot of coffee'
       // version: read from package.json in ContactFooter.jsx (do not duplicate here)
     },

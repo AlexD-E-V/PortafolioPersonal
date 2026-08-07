@@ -221,7 +221,7 @@ export function Footer({ lang }) {
         <div>
           <img className="footer-logo" src="/brand/horizontal.png" alt="Alex D.E.V." width="167" height="48" />
           <p className="footer-sub">{t.footer.tagline}</p>
-          <p className="footer-copy">{t.footer.copyright}</p>
+          <p className="footer-copy">{t.footer.copyright.replace('{year}', new Date().getFullYear())}</p>
         </div>
         <div className="footer-col">
           <h5>{t.footer.quickLinks}</h5>
