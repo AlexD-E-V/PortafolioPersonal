@@ -92,16 +92,14 @@ export function ProjectCard({ project, lang, index, onOpen }) {
     return () => { window.removeEventListener('scroll', check); if (timer) clearTimeout(timer); };
   }, []);
 
+  /* La card es un <article> normal (no un role="button"): antes envolvía a
+     otro botón y a un enlace, lo que es contenido interactivo anidado y deja
+     a los lectores de pantalla sin saber qué anunciar. Ahora quien hace
+     clicable toda la superficie es el botón "Ver detalles", al que el CSS le
+     estira un ::after invisible sobre la card (patrón "stretched link").
+     "Visitar" queda por encima de esa capa y sigue siendo un enlace aparte. */
   return (
-    <article
-      ref={cardRef}
-      className="project-card appear"
-      tabIndex={0}
-      role="button"
-      aria-label={c.title}
-      onClick={() => onOpen(project.id)}
-      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); onOpen(project.id); } }}
-    >
+    <article ref={cardRef} className="project-card appear">
       <div className="project-img">
         <div className="badge-cat-row">
           {project.cats.map((cat) => (
@@ -129,7 +127,14 @@ export function ProjectCard({ project, lang, index, onOpen }) {
           {project.techLabels.map((tech) => <span className="badge-mono" key={tech}>{tech}</span>)}
         </div>
         <div className="project-footer">
-          <button className="project-link" onClick={(e) => { e.stopPropagation(); onOpen(project.id); }}>
+          {/* aria-label incluye el título: "Ver detalles" a secas se repite en
+              todas las cards y no dice nada fuera de contexto. Contiene el
+              texto visible, como exige WCAG 2.5.3 (Label in Name). */}
+          <button
+            className="project-link project-link-stretched"
+            aria-label={t.projects.details + ' — ' + c.title}
+            onClick={() => onOpen(project.id)}
+          >
             {t.projects.details} <ArrowRight size={15} aria-hidden="true" />
           </button>
           {/* "En proceso" lo dicta SOLO el flag wip (no la ausencia de link).
@@ -143,7 +148,6 @@ export function ProjectCard({ project, lang, index, onOpen }) {
               href={project.live}
               target="_blank"
               rel="noopener noreferrer"
-              onClick={(e) => e.stopPropagation()}
               aria-label={t.projects.visit + ' — ' + c.title}
             >
               {t.projects.visit} <ExternalLink size={14} aria-hidden="true" />
