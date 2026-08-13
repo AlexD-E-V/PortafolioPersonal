@@ -4,7 +4,7 @@ Registro de lo que se dejó **conscientemente para después**, con el porqué, p
 volver a discutirlo desde cero. El README mantiene la lista general de pendientes;
 este archivo guarda el **contexto de las decisiones**.
 
-Última actualización: **2026-08-07**
+Última actualización: **2026-08-13**
 
 ---
 
@@ -59,6 +59,28 @@ todas de **build-time**: sitio estático sin input no confiable → sin exposici
 runtime. Es *breaking change*, así que va en sesión dedicada.
 En el mismo saco: React 18→19 y three 0.158→0.185.
 
+> Las menores **ya se subieron** (2026-08-13): `lucide-react` 1.18→1.31 y
+> `react-icons` 5.6→5.7, dentro del mismo major y sin tocar nada más. No mueven el
+> `npm audit`: las 3 vulnerabilidades cuelgan de Astro.
+
+### `'unsafe-inline'` en la CSP — asumido, no olvidado
+`vercel.json` define una Content-Security-Policy cuyo `script-src` incluye
+`'unsafe-inline'`. **No es dejadez:** Astro emite dos scripts inline con el runtime de
+hidratación de islas y su contenido **cambia en cada build**, así que fijarlos por hash
+rompería cada despliegue, y los nonces necesitan SSR (aquí el sitio es estático).
+
+Qué cubre entonces: **sí** impide cargar scripts de dominios ajenos y conectar con
+servidores no listados; **no** impide un script inline inyectado. Para un sitio estático
+sin login ni contenido de usuario ese vector es casi inexistente → saldo positivo.
+
+**Se podría cerrar** el día que se migre a SSR (nonces) o con un plugin que calcule los
+hashes en cada build. Ninguna de las dos compensa hoy.
+
+> ⚠️ **Lo que sí hay que recordar:** al añadir cualquier servicio externo (Maps,
+> Analytics, YouTube, Calendly, chat, CDN de fuentes…) **hay que meter su dominio en la
+> CSP** o fallará **en silencio**. La tabla de qué directiva toca en cada caso está en
+> el [`README`](README.md#despliegue-vercel).
+
 ### No cargar Three.js en móvil / `prefers-reduced-motion`
 El code-splitting ya está hecho (bundle crítico 558 kB → 87 kB). El siguiente paso
 sería **no cargar Three en absoluto** en móvil o con reduced-motion y poner un fondo
@@ -74,21 +96,35 @@ el archivo) y actualizando textos e imágenes con la identidad nueva.
 
 ## 🟢 Contenido por completar
 
-- **Textos `[provisional]`** en `projects.js`: quedan en `club-exploradores`,
-  `rompamos-el-tabu`, `trazando-pasos` y el `solution` EN de `plantain-feast`.
+- **Textos `[provisional]`** en `projects.js`: quedan **13** — el `challenge` y el
+  `solution` de `club-exploradores`, `rompamos-el-tabu` y `trazando-pasos` (ES y EN),
+  más el `solution` EN de `plantain-feast`. Al buscar salen 26: los otros 13 están
+  dentro del bloque comentado de Space DEV y no se muestran.
 - **Galería de Pets**: faltan `1/2/3.webp`. No rompe nada porque `wip: true` las oculta.
-- **Estrellas en `enabled: false`** (`skills.js`): `html5`, `preact`, `responsive`,
-  `postgresql`, `maya`, `blender`. Revisar cuáles reactivar cuando haya proyecto que
-  las respalde.
-- **Icono ✦** de filtros secundarios: sigue siendo el temporal
-  (`Sections.jsx`, comentario "icono temporal — pendiente iconografía").
-- **Recuento de "Tecnologías dominadas"** (métrica del Sobre Mí): actualizar cuando el
-  stack esté cerrado.
-- **`tech` de las entradas de experiencia**: todas con `tech: []`, así que ninguna
-  muestra badges. Decidir si se quieren.
 - **Google Search Console**: registrar la propiedad, enviar el sitemap y pedir indexación.
 - **Apartado de marcas / colaboraciones**: a futuro, cuando esas marcas estén más
   establecidas.
+- **Icono ✦** de filtros secundarios: sigue siendo el temporal
+  (`Sections.jsx`, comentario "icono temporal — pendiente iconografía"). Funciona desde
+  la v1.1.0; o entra en una tanda de iconografía, o se acepta como definitivo.
+
+---
+
+## ⚪ Lo que parecía pendiente y no lo es
+
+Revisado el **2026-08-13**. Se anota aquí para no volver a abrirlo cada vez que se
+repasa el proyecto.
+
+- **Estrellas en `enabled: false`** (`html5`, `preact`, `responsive`, `postgresql`,
+  `maya`, `blender`): no es una tarea, es el criterio funcionando — no se muestra
+  tecnología sin un proyecto que la respalde. Se reactivan solas el día que lo haya.
+- **Recuento de "Tecnologías dominadas" (25+)**: hay **32** estrellas visibles, así que
+  la métrica ya es correcta y deliberadamente conservadora. Nada que actualizar.
+- **`tech: []` en las entradas de experiencia**: las tarjetas se leen bien sin badges.
+  Es una decisión de *no hacerlo*, no una tarea a medias.
+- **Repos "Ver código"**: solo `alfareria-metalurgia-ar` lleva enlace, y el resto se
+  reservan por el criterio ya fijado (producto vivo de cliente, o el repo facilitaría
+  trampas). El campo `github` está cableado; no hay nada que completar.
 
 ---
 

@@ -30,6 +30,7 @@ npm run preview  # sirve el build
 ```
 portafolio/
 ├── astro.config.mjs
+├── vercel.json                     # Cabeceras de seguridad (CSP) y caché
 ├── public/
 │   ├── brand/                      # logos, favicon, apple-touch, og-image
 │   ├── cv/                         # CV-Alex-DEV-ES.pdf / -EN.pdf
@@ -59,7 +60,8 @@ portafolio/
 │       ├── Constellation.jsx    # Constelación de habilidades (canvas 2D)
 │       ├── Sections.jsx         # Habilidades, proyectos, modal, experiencia, proceso
 │       └── ContactFooter.jsx    # Contacto y footer
-└── docs/
+├── tools/cv/                    # Generador del CV en inglés (ver su README)
+└── docs/                        # Interno, no versionado
     ├── portafolio-diseno-v2.md                  # Documento de diseño original
     ├── iteracion-v1.0.0-portfolio-alex-dev.md   # Plan de la iteración v1.0.0
     └── iteracion-v1.1.0-portfolio-alex-dev.md   # Plan de la iteración v1.1.0
@@ -86,8 +88,56 @@ El sitio es **estático (SSG)**; Vercel detecta Astro solo (build `astro build`,
 - **Variable de entorno:** `PUBLIC_WEB3FORMS_KEY` configurada en *Project Settings → Environment Variables* (vive en `.env` local, que no se sube). Sin ella, el formulario falla en producción.
 - **`SITE_URL`** en `index.astro` y **`site`** en `astro.config.mjs` apuntan al dominio → `og:image` / `og:url` absolutas y URLs canónicas.
 - **Sitemap:** `@astrojs/sitemap` genera `sitemap-index.xml` en el build; `robots.txt` ya lo referencia.
+- **`vercel.json`:** cabeceras de seguridad y reglas de caché (ver abajo).
 
 > Si en el futuro se migra a **dominio propio**, actualizar el dominio en estos tres sitios: `SITE_URL` (index.astro), `site` (astro.config.mjs) y la línea `Sitemap:` (robots.txt); y volver a registrar la propiedad en Search Console.
+
+### Cabeceras y caché (`vercel.json`)
+
+En todas las rutas: HSTS, `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`,
+`Referrer-Policy: strict-origin-when-cross-origin`, `Permissions-Policy` (cámara,
+micrófono, geolocalización, pagos y USB bloqueados) y una **Content-Security-Policy**.
+
+Caché distinta según el archivo, a propósito:
+
+| Ruta | Caché | Por qué |
+|---|---|---|
+| `/_astro/*` | 1 año, `immutable` | Llevan hash en el nombre: si cambia el contenido, cambia la URL |
+| `/images/*`, `/brand/*` | 1 día + 7 de `stale-while-revalidate` | **No** llevan hash; si reemplazas una imagen no debe quedarse clavada un año |
+| `/cv/*` | 1 hora, `must-revalidate` | Es lo que más se actualiza |
+
+> **⚠️ Al añadir cualquier servicio externo, hay que tocar la CSP**
+>
+> La CSP **bloquea por defecto todo dominio que no esté listado**, y falla **en
+> silencio**: no verás un error en la página, simplemente el mapa no carga, el
+> vídeo sale en negro o las visitas no se registran. Si en algún momento añades
+> **Google Maps, Google Analytics, un embed de YouTube/Vimeo, Calendly, un chat,
+> una fuente de otro proveedor…**, hay que meter su dominio en la directiva que
+> corresponda de `vercel.json`:
+>
+> | Qué añades | Directiva |
+> |---|---|
+> | Script de terceros (GA4, chat, widget) | `script-src` |
+> | Llamada `fetch`/XHR a otra API | `connect-src` |
+> | `<iframe>` (Maps, YouTube, Calendly) | `frame-src` — **no existe todavía, hay que crearla** |
+> | Imágenes de otro dominio (CDN) | `img-src` |
+> | Fuentes o CSS de otro proveedor | `font-src` / `style-src` |
+>
+> Suele hacer falta **más de una** a la vez: Google Maps embebido, por ejemplo,
+> necesita `frame-src` **y** `script-src` **e** `img-src`.
+>
+> **Cómo comprobarlo:** `astro preview` **no** aplica `vercel.json`, así que en
+> local no se detecta. Tras desplegar, abre la consola del navegador y busca
+> mensajes tipo *"Refused to … because it violates the Content Security Policy"*:
+> te dicen la directiva exacta que falta.
+>
+> **Por qué `script-src` lleva `'unsafe-inline'`:** Astro emite dos scripts inline
+> con el runtime de hidratación de islas, y su contenido cambia en cada build, así
+> que no se pueden fijar por hash sin romper cada despliegue. Traducido: la CSP
+> **sí** impide cargar scripts de dominios ajenos y conectar con servidores no
+> listados; **no** impide un script inline inyectado. Para un sitio estático sin
+> login ni contenido de usuario ese vector es casi inexistente, pero conviene
+> saberlo en vez de dar por hecho que la CSP cubre todo.
 
 ## Pendientes (puntos abiertos)
 
@@ -98,16 +148,15 @@ El sitio es **estático (SSG)**; Vercel detecta Astro solo (build `astro build`,
 - **Google Search Console:** registrar la propiedad `https://alex-d-e-v.vercel.app/` (verificación por meta tag o archivo), enviar el sitemap (`sitemap-index.xml`) y solicitar indexación. Acelera aparecer en Google; opcional para un portafolio de referidos.
 - **Renderizado client-only (limitación conocida):** la UI se monta con `client:only="react"`, así que el HTML servido lleva las metaetiquetas (title/description/OG ✓) pero el `<body>` se rellena por JS — sin `<h1>` ni texto en el HTML crudo. Google renderiza JS y termina indexando, pero crawlers más simples (algunos sociales/Bing) ven poco. Mejorarlo implica pasar a `client:load` con todo el acceso a `window`/`localStorage` guardado para SSR — refactor mayor, baja prioridad para este sitio.
 
-**Consistencia / técnico:**
-- **Migración a Astro 7:** el proyecto está en Astro 5.18; la última es la 7.x (dos majors atrás). Es lo único que cierra las 3 vulnerabilidades *high* que quedan en `npm audit` (`sharp`/libvips, `esbuild`), todas de **build-time**: sitio estático sin input no confiable → sin exposición en runtime. Tarea dedicada, no urgente. En el mismo saco: React 18→19 y three 0.158→0.185.
-- **Optimización de carga:** hecho el corte principal — `Hero3D` se carga con `React.lazy`, así que Three.js vive en su propio chunk (~472 kB) y el bundle crítico bajó de 558 kB a 87 kB. Queda **opcional**: no cargar Three.js en absoluto en móvil / `prefers-reduced-motion` y poner un fondo estático. Eso cambia el aspecto del hero en esos casos, así que es decisión de diseño; medir con Lighthouse antes.
-- **Repos "Ver código":** el botón ya está cableado (campo `github`). Falta poner URLs puntualmente, solo en repos que **no comprometan nada** (sin secretos, sin facilitar trampas, sin dañar productos vivos de cliente).
-- **Contenido de proyectos:** revisar y reemplazar los textos marcados `[provisional]` en `projects.js`, y subir las imágenes (`cover`/galería) que aún faltan.
-- **Space DEV oculto:** el proyecto sigue comentado en `projects.js` a la espera del **rebranding**. Se reactiva borrando las líneas de apertura y cierre del comentario que lo envuelve (marcadas en el archivo), y actualizando sus textos e imágenes con la identidad nueva.
-- **Constelación de stack:** revisar qué tecnologías mantener en `enabled: false` mientras no tengan un proyecto que las respalde.
-- **Recuento final de tecnologías dominadas:** actualizar la métrica del "Sobre Mí" cuando el stack esté cerrado.
-- **Sección de experiencia:** ampliar con entradas posteriores a 2025.
-- **Apartado de marcas / colaboraciones:** mención a marcas y emprendimientos con participación activa. A futuro, cuando estén más establecidas.
+**Contenido:**
+- **Textos `[provisional]`:** quedan **13** en `projects.js` — el `challenge` y el `solution` de `club-exploradores`, `rompamos-el-tabu` y `trazando-pasos` (en ES y EN), más el `solution` EN de `plantain-feast`. (Los otros que aparecen al buscar están dentro del bloque comentado de Space DEV y no se muestran.)
+- **Galería de Pets:** faltan `1/2/3.webp`. No rompe nada: `wip: true` las oculta.
+- **Sección de experiencia:** ampliar con entradas posteriores.
+- **Apartado de marcas / colaboraciones:** a futuro, cuando esas marcas estén más establecidas.
+
+**Técnico:**
+- **Migración a Astro 7:** el proyecto está en Astro 5.18; la última es la 7.x (dos majors atrás). Es lo único que cierra las 3 vulnerabilidades que quedan en `npm audit` (`sharp`/libvips, `esbuild`), todas de **build-time**: sitio estático sin input no confiable → sin exposición en runtime. Tarea dedicada, no urgente. En el mismo saco: React 18→19 y three 0.158→0.185.
+- **Optimización de carga:** hecho el corte principal — `Hero3D` se carga con `React.lazy`, así que Three.js vive en su propio chunk (~472 kB / 120 kB gzip) y sale del camino crítico, que queda en **~238 kB (~78 kB gzip)** entre `client.js`, `App.js` e `index.js`. Queda **opcional**: no cargar Three.js en absoluto en móvil / `prefers-reduced-motion` y poner un fondo estático. Eso cambia el aspecto del hero en esos casos, así que es decisión de diseño; medir con Lighthouse antes.
 
 **Hecho / descartado:**
 - ~~Integración con Supabase~~ — descartado; el status del header se controla en `src/data/site.js`, suficiente.
@@ -115,6 +164,31 @@ El sitio es **estático (SSG)**; Vercel detecta Astro solo (build `astro build`,
 - ~~Enlaces de contacto (email, GitHub, LinkedIn, CV)~~ — hechos.
 - ~~Logo definitivo~~ — hecho; assets de marca en `public/brand/`.
 - ~~Sección de habilidades de diseño / Behance~~ — hecho.
+- ~~Cabeceras de seguridad y caché~~ — hechas en `vercel.json`.
+- ~~Contraste AA~~ — hecho; `--text-2` da 5.09:1 sobre el fondo y 4.77:1 sobre superficies elevadas.
+- ~~Accesibilidad de la constelación~~ — hecha; ver la nota de abajo.
+- ~~Repos "Ver código"~~ — resuelto por criterio: solo `alfareria-metalurgia-ar` lleva enlace. El resto se reservan a propósito (producto vivo de cliente, o el repo facilitaría trampas). No es una tarea abierta.
+- ~~Recuento de "Tecnologías dominadas"~~ — la métrica (25+) es correcta y conservadora frente a las 32 estrellas visibles.
+- ~~Estrellas en `enabled: false`~~ — no es un pendiente: es el criterio funcionando (no se muestran tecnologías sin proyecto que las respalde).
+
+## Accesibilidad
+
+Además de lo habitual (skip link, focus trap y fondo `inert` en el modal, errores de
+formulario enlazados a su input con `aria-invalid`/`aria-describedby`, *stretched link*
+en las cards para no anidar controles), hay una decisión que conviene conocer antes de
+tocar la constelación:
+
+**La constelación tiene un equivalente accesible.** El `<canvas>` es una imagen plana:
+sus estrellas no existen para el teclado ni para un lector de pantalla. Por eso
+`Constellation.jsx` renderiza, junto al canvas, una lista de botones (uno por estrella)
+oculta a la vista pero enfocable, con `role="toolbar"` y **roving tabindex**: es *una*
+sola parada de tabulación y por dentro se recorre con flechas (`Home`/`End` a los
+extremos, `Enter` filtra). Al enfocar una estrella se enciende en el canvas y aparece su
+tooltip, así que el foco sí se ve.
+
+> Si añades o quitas estrellas, la lista se genera sola desde `SKILLS`. Lo que **no**
+> hay que hacer es devolverle el `aria-label` al `<canvas>`: está `aria-hidden` a
+> propósito, porque quien aporta la semántica es la lista.
 
 ## Autor
 
