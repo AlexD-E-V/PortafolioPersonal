@@ -44,7 +44,9 @@ export const I18N = {
       hint: 'arrastra para explorar · hover: detalle · click: filtrar',
       moreFilters: 'Más filtros',
       projects: 'proyectos',
-      project: 'proyecto'
+      project: 'proyecto',
+      // Etiqueta de la lista accesible que acompaña al canvas (Constellation.jsx)
+      listLabel: 'Tecnologías de la constelación — activa una para filtrar los proyectos'
     },
     filters: { all: 'Todos', web: 'Web', apps: 'Apps', games: 'Videojuegos', xr: 'VR/AR', backend: 'Backend', tools: 'Herramientas', design: 'Diseño', deploy: 'Deploy' },
     projects: {
@@ -174,7 +176,9 @@ export const I18N = {
       hint: 'drag to explore · hover: details · click: filter',
       moreFilters: 'More filters',
       projects: 'projects',
-      project: 'project'
+      project: 'project',
+      // Label of the accessible list that mirrors the canvas (Constellation.jsx)
+      listLabel: 'Constellation technologies — activate one to filter the projects'
     },
     filters: { all: 'All', web: 'Web', apps: 'Apps', games: 'Games', xr: 'VR/AR', backend: 'Backend', tools: 'Tools', design: 'Design', deploy: 'Deploy' },
     projects: {

@@ -98,6 +98,19 @@ main:focus, main:focus-visible { outline: none; }
 
 #root { position: relative; z-index: 1; }
 
+/* Oculta a la vista pero NO al foco ni a los lectores de pantalla.
+   Con display:none o visibility:hidden el elemento saldría del orden de
+   tabulación, que es justo lo que aquí hace falta conservar. */
+.visually-hidden {
+  position: absolute;
+  top: 0; left: 0;
+  width: 1px; height: 1px;
+  margin: -1px; padding: 0; border: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
 /* ---------- Tipografía utilitaria ---------- */
 .section-label {
   font-family: var(--font-mono);
@@ -724,6 +737,15 @@ section.site-section {
   height: 520px;
 }
 .constellation-wrap canvas { display: block; width: 100%; height: 100%; }
+/* Lista accesible equivalente al canvas (ver Constellation.jsx). Está oculta
+   con .visually-hidden; estos botones solo necesitan no heredar estilos que
+   la reintroduzcan visualmente. El indicador de foco es la propia estrella,
+   que se enciende en el canvas al enfocarla. */
+.const-a11y-list { list-style: none; }
+.const-a11y-list button {
+  background: none; border: 0; padding: 0;
+  color: inherit; font: inherit;
+}
 .const-tooltip {
   position: absolute;
   transform: translate(-50%, -120%);
