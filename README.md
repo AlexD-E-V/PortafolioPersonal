@@ -73,6 +73,7 @@ portafolio/
 - `image` + `gallery` — rutas dentro de `public/images/projects/<cat>/<id>/`. Si un archivo no existe, cae a un placeholder automáticamente.
 - `live` — URL pública (botón "Visitar"). `github` — URL del repo (botón "Ver código", solo en el modal); `null` lo oculta.
 - `wip: true` — proyecto en proceso: la card marca "En proceso" y el modal oculta galería/resultados con un aviso "Más detalles próximamente".
+- `featured: true` — proyecto que representa a su categoría en la vista inicial de "Todos" (una card de web, apps, games y xr). Uno por categoría; sin marcar, se coge el primero del array. No cambia el orden de "Mostrar todo" ni los filtros.
 
 **Constelación** (`src/data/skills.js`): cada estrella es una tecnología. El contador de proyectos por estrella es **automático** (cuenta los `tech` de los proyectos). `TECH_LABELS` (id→nombre) resuelve los nombres del stack del modal.
 

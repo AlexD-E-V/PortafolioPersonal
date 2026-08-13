@@ -23,6 +23,10 @@
    - wip: true => proyecto en proceso. El modal oculta galería y
      resultados y muestra un aviso "Más detalles próximamente". Al
      terminar el proyecto, quita el flag y se rellena normal.
+   - featured: true => es el proyecto que representa a su categoría en la
+     vista inicial de "Todos" (que muestra una card de web, apps, games y
+     xr). Uno por categoría como mucho; sin él se coge el primero del array.
+     No afecta al orden de "Mostrar todo" ni a los filtros.
    - Los bloques de case study (challenge/solution/result/galería)
      se completan en la iteración del detalle expandido; el modal
      omite los bloques ausentes.
@@ -83,6 +87,7 @@ export const PROJECTS = [
     techLabels: ['Astro', 'React', 'Tailwind CSS', 'TypeScript'],
     live: 'https://idcom.com.ec',
     github: null, // producto vivo de cliente
+    featured: true, // representa a Web en la vista inicial de "Todos"
     year: 2026,
     gallery: [
       '/images/projects/web/idcom/1.webp',
