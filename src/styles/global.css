@@ -13,7 +13,12 @@
   --gold: #F4B860;
   --text-0: #F5F7FA;
   --text-1: #A7B0C0;
-  --text-2: #6B7280;
+  /* #6B7280 daba 4.07:1 sobre --bg-0: por debajo del 4.5:1 que pide WCAG AA
+     para texto normal (hint de la constelación, labels de stats, tagline del
+     footer, idioma inactivo). Este tono da 5.09:1 sobre el fondo y 4.77:1
+     sobre las superficies elevadas (stat-card, badge "En proceso"), que son
+     las que marcan el mínimo. */
+  --text-2: #7A8290;
   --border-subtle: rgba(255, 255, 255, 0.08);
   --border-raised: rgba(255, 255, 255, 0.15);
   --border-hover: rgba(57, 129, 191, 0.5);
@@ -94,8 +99,6 @@ main:focus, main:focus-visible { outline: none; }
 #root { position: relative; z-index: 1; }
 
 /* ---------- Tipografía utilitaria ---------- */
-.mono { font-family: var(--font-mono); }
-
 .section-label {
   font-family: var(--font-mono);
   font-size: 13px;
@@ -355,13 +358,6 @@ section.site-section {
   border-radius: 99px;
   padding: 7px 14px;
   margin-bottom: 28px;
-}
-.hero-kicker {
-  font-family: var(--font-mono);
-  font-size: 14px; font-weight: 500;
-  color: var(--blue-light);
-  letter-spacing: 0.1em;
-  margin-bottom: 14px;
 }
 .hero-title {
   font-size: clamp(42px, 6vw, 84px);
@@ -1242,10 +1238,11 @@ section.site-section {
   grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
 }
-.footer-name { font-weight: 600; font-size: 17px; }
 .footer-logo { height: 48px; width: auto; display: block; margin-bottom: 4px; }
 .footer-sub { font-size: 13.5px; color: var(--text-2); margin-top: 6px; }
-.footer-col h5 {
+/* h3 y no h5: el encabezado anterior de la página es un h2 (Contacto), así
+   que un h5 se saltaba dos niveles en el índice de los lectores de pantalla. */
+.footer-col h3 {
   font-family: var(--font-mono);
   font-size: 12px; font-weight: 500;
   letter-spacing: 0.08em;

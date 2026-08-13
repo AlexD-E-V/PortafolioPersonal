@@ -224,7 +224,7 @@ export function Footer({ lang }) {
           <p className="footer-copy">{t.footer.copyright.replace('{year}', new Date().getFullYear())}</p>
         </div>
         <div className="footer-col">
-          <h5>{t.footer.quickLinks}</h5>
+          <h3>{t.footer.quickLinks}</h3>
           <nav>
             {NAV_IDS.slice(1).map((id) => (
               <button key={id} onClick={() => goTo(id)}>{t.nav[id]}</button>
@@ -232,7 +232,7 @@ export function Footer({ lang }) {
           </nav>
         </div>
         <div className="footer-col">
-          <h5>{t.footer.social}</h5>
+          <h3>{t.footer.social}</h3>
           <div className="footer-social">
             <a href={GITHUB_URL} target="_blank" rel="noopener noreferrer" aria-label="GitHub"><FaGithub size={17} aria-hidden="true" /></a>
             <a href={LINKEDIN_URL} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><FaLinkedin size={17} aria-hidden="true" /></a>

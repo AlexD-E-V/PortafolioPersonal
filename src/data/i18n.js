@@ -147,7 +147,7 @@ export const I18N = {
       closed: 'Not taking projects right now'
     },
     hero: {
-      title: 'ALEX D.E.V.',
+      title: 'Alex D.E.V.',
       subtitle: 'Full Stack Developer',
       desc: 'I design and build applications, websites and games where the logic of code meets the curiosity to explore new ways of creating.',
       ctaPrimary: 'View projects',
@@ -179,7 +179,7 @@ export const I18N = {
     filters: { all: 'All', web: 'Web', apps: 'Apps', games: 'Games', xr: 'VR/AR', backend: 'Backend', tools: 'Tools', design: 'Design', deploy: 'Deploy' },
     projects: {
       label: '// 03 PROJECTS',
-      title: 'Our Archives',
+      title: 'The Archives',
       intro: "Here you can take a look at the projects I've created or contributed to — at least the ones that **aren't confidential** 🕵️. Each one tells a different story, with its own stack and its own reason to exist.",
       filteringBy: 'Filtering by:',
       seeMore: 'Show all',
