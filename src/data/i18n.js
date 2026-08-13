@@ -46,7 +46,7 @@ export const I18N = {
       projects: 'proyectos',
       project: 'proyecto',
       // Etiqueta de la lista accesible que acompaña al canvas (Constellation.jsx)
-      listLabel: 'Tecnologías de la constelación — activa una para filtrar los proyectos'
+      listLabel: 'Tecnologías de la constelación — flechas para recorrerlas, Enter para filtrar los proyectos'
     },
     filters: { all: 'Todos', web: 'Web', apps: 'Apps', games: 'Videojuegos', xr: 'VR/AR', backend: 'Backend', tools: 'Herramientas', design: 'Diseño', deploy: 'Deploy' },
     projects: {
@@ -178,7 +178,7 @@ export const I18N = {
       projects: 'projects',
       project: 'project',
       // Label of the accessible list that mirrors the canvas (Constellation.jsx)
-      listLabel: 'Constellation technologies — activate one to filter the projects'
+      listLabel: 'Constellation technologies — arrow keys to move through them, Enter to filter the projects'
     },
     filters: { all: 'All', web: 'Web', apps: 'Apps', games: 'Games', xr: 'VR/AR', backend: 'Backend', tools: 'Tools', design: 'Design', deploy: 'Deploy' },
     projects: {

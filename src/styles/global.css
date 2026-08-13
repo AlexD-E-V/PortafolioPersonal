@@ -741,7 +741,6 @@ section.site-section {
    con .visually-hidden; estos botones solo necesitan no heredar estilos que
    la reintroduzcan visualmente. El indicador de foco es la propia estrella,
    que se enciende en el canvas al enfocarla. */
-.const-a11y-list { list-style: none; }
 .const-a11y-list button {
   background: none; border: 0; padding: 0;
   color: inherit; font: inherit;
