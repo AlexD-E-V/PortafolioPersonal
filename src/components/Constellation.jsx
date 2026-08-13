@@ -28,6 +28,18 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
   const canvasRef = React.useRef(null);
   const [tooltip, setTooltip] = React.useState(null);
   const animRef = React.useRef({ stars: {}, hovered: null, raf: null, t: 0, pan: 0, vel: 0 });
+  /* Puente hacia el interior del efecto: la lista accesible vive en el JSX,
+     pero encender una estrella necesita px/py/pan/showTooltip, que son del
+     closure del efecto. El efecto publica aquí sus handlers. */
+  const apiRef = React.useRef(null);
+  /* Roving tabindex: la lista accesible es UNA sola parada de tabulación y
+     por dentro se recorre con las flechas. Con 32 estrellas, hacerlas 32
+     paradas obligaba a atravesarlas todas para pasar de Habilidades a
+     Proyectos. `activeIdx` es la única que lleva tabIndex 0. */
+  const itemsRef = React.useRef([]);
+  const [activeIdx, setActiveIdx] = React.useState(0);
+  // Al cambiar de filtro la lista es otra: se vuelve a empezar por la primera.
+  React.useEffect(() => { setActiveIdx(0); }, [filter]);
 
   const t9n = I18N[lang].skills;
 
@@ -107,6 +119,31 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
     function setIdleCursor(star) {
       canvas.style.cursor = star ? 'pointer' : 'grab';
     }
+
+    /* --- Handlers para la lista accesible (teclado / lector de pantalla) ---
+       El canvas es una imagen plana: sus estrellas no existen para el foco.
+       Los botones ocultos del JSX llaman aquí para que enfocar con el teclado
+       produzca exactamente lo mismo que pasar el ratón por encima — así el
+       foco SÍ se ve, aunque el botón que lo tiene sea invisible. */
+    apiRef.current = {
+      focus(star) {
+        A.hovered = star;
+        A.vel = 0; // corta la inercia: el pan va a saltar a la estrella
+        // Si la estrella cae fuera del encuadre (el espacio virtual es más
+        // ancho que el contenedor), se panea lo justo para traerla a la vista.
+        const raw = pad.x + star.x * (virtW() - pad.x * 2);
+        const margin = 60;
+        if (A.pan < raw - W + margin) A.pan = clampPan(raw - W + margin);
+        else if (A.pan > raw - margin) A.pan = clampPan(raw - margin);
+        showTooltip(star);
+        scheduleDraw();
+      },
+      blur() {
+        A.hovered = null;
+        setTooltip(null);
+        scheduleDraw();
+      }
+    };
 
     // --- Pan con click sostenido sobre el vacío ---
     let panning = false, panMoved = false, panStartX = 0, panStartVal = 0;
@@ -311,6 +348,7 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
 
     return () => {
       cancelAnimationFrame(A.raf);
+      apiRef.current = null;
       ro.disconnect();
       io.disconnect();
       canvas.removeEventListener('pointerdown', onPointerDown);
@@ -323,11 +361,76 @@ export function Constellation({ lang, filter, onStarClick, reducedMotion }) {
     };
   }, [filter, lang, reducedMotion]);
 
+  /* Misma información que el tooltip, en texto: nombre — categoría · N proyectos.
+     Con 0 proyectos se omite el contador, igual que en el tooltip. */
+  const starLabel = (s) => {
+    const cat = I18N[lang].filters[s.cat] || s.cat;
+    const n = s.projects;
+    const count = n > 0 ? ` · ${n} ${n === 1 ? t9n.project : t9n.projects}` : '';
+    return `${s.name} — ${cat}${count}`;
+  };
+
+  // La lista sigue al filtro activo, para no ofrecer por teclado estrellas
+  // que en pantalla están apagadas.
+  const listed = VISIBLE.filter((s) => filter === 'all' || catsOf(s).includes(filter));
+  itemsRef.current.length = listed.length;
+
+  /* Se acota en el render, no solo en el efecto: al reducirse la lista por un
+     filtro, el render que ocurre ANTES de que el efecto reponga activeIdx
+     dejaría el índice fuera de rango y ningún botón con tabIndex 0 — es decir,
+     la lista entera se volvería inalcanzable con el tabulador. */
+  const active = Math.min(activeIdx, listed.length - 1);
+
+  const onListKeyDown = (e) => {
+    const n = listed.length;
+    if (!n) return;
+    let next = null;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') next = (active + 1) % n;
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') next = (active - 1 + n) % n;
+    else if (e.key === 'Home') next = 0;
+    else if (e.key === 'End') next = n - 1;
+    if (next === null) return;
+    e.preventDefault(); // si no, las flechas scrollean la página a la vez
+    setActiveIdx(next);
+    const el = itemsRef.current[next];
+    if (el) el.focus(); // el onFocus del botón enciende la estrella
+  };
+
   return (
     <div className="constellation-wrap" ref={wrapRef}>
-      <canvas ref={canvasRef} aria-label="Constelación de tecnologías"></canvas>
+      {/* aria-hidden: el canvas es la presentación visual. El contenido real
+          (las estrellas y la acción de filtrar) lo expone la lista de abajo. */}
+      <canvas ref={canvasRef} aria-hidden="true"></canvas>
+      {/* Equivalente accesible del canvas. Va oculto a la vista porque el
+          dibujo ya cumple esa función, pero es enfocable: al llegar a una
+          estrella se enciende en el canvas y sale su tooltip, y Enter filtra
+          los proyectos igual que el clic.
+          role="toolbar": es un grupo de botones que se recorre con flechas,
+          y ese rol es el que hace que un lector de pantalla anuncie ese modo
+          de navegación en vez de dejarlo a que el usuario lo adivine. */}
+      <div
+        className="const-a11y-list visually-hidden"
+        role="toolbar"
+        aria-label={t9n.listLabel}
+        onKeyDown={onListKeyDown}
+      >
+        {listed.map((s, i) => (
+          <button
+            key={s.id}
+            type="button"
+            ref={(el) => { itemsRef.current[i] = el; }}
+            tabIndex={i === active ? 0 : -1}
+            onFocus={() => { setActiveIdx(i); apiRef.current && apiRef.current.focus(s); }}
+            onBlur={() => apiRef.current && apiRef.current.blur()}
+            onClick={() => onStarClick && onStarClick(s)}
+          >
+            {starLabel(s)}
+          </button>
+        ))}
+      </div>
       {tooltip && (
-        <div className="const-tooltip" style={{ left: tooltip.x, top: tooltip.y }}>
+        // aria-hidden: duplicaría lo que ya anuncia el botón enfocado.
+        <div className="const-tooltip" style={{ left: tooltip.x, top: tooltip.y }} aria-hidden="true">
           <span>{tooltip.name}</span>
           <span className="tt-meta">{tooltip.meta}</span>
         </div>

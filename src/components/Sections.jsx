@@ -173,11 +173,16 @@ export function ProjectsSection({ lang, filter, setFilter, techFilter, clearTech
 
   // Vista inicial en "Todos": una card de cada categoría principal
   // (web, apps, games, xr) para transmitir la diversidad del trabajo.
+  // Dentro de cada categoría manda el proyecto marcado `featured`; sin
+  // ninguno marcado se coge el primero del array, como antes. Así se elige
+  // el escaparate sin reordenar PROJECTS (que fija el orden de "Mostrar
+  // todo" y la navegación entre modales).
   let visible;
   if (!expanded && filter === 'all' && !techFilter) {
     const picks = [];
     FILTER_KEYS.slice(1).forEach((cat) => {
-      const p = list.find((x) => x.cats.includes(cat) && !picks.includes(x));
+      const free = (x) => x.cats.includes(cat) && !picks.includes(x);
+      const p = list.find((x) => free(x) && x.featured) || list.find(free);
       if (p) picks.push(p);
     });
     list.forEach((p) => { if (picks.length < 4 && !picks.includes(p)) picks.push(p); });
