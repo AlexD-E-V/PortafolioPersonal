@@ -15,7 +15,7 @@ import { TECH_LABELS } from '../data/skills.js';
 import { EXPERIENCE } from '../data/experience.js';
 import { useReveal, Bold } from './Ui.jsx';
 import { Constellation } from './Constellation.jsx';
-import { ArrowRight, ExternalLink, Clock, X, ChevronLeft, ChevronRight, Sparkles, Palette } from 'lucide-react';
+import { ArrowRight, ExternalLink, Clock, X, ChevronLeft, ChevronRight, Palette } from 'lucide-react';
 import { FaGithub, FaBehance } from 'react-icons/fa6';
 import { BEHANCE_URL } from './ContactFooter.jsx';
 
