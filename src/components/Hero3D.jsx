@@ -89,16 +89,19 @@ export function Hero3D({ lang, onPlanetClick, reducedMotion }) {
 
     // --- Logo en el centro del sistema (idea original: el logo vive en el núcleo) ---
     // Oculto por defecto; aparece (fade in + pulso) al hacer hover sobre el núcleo.
-    const logoTex = new THREE.TextureLoader().load('/brand/iso.png');
+    // PNG y no el SVG: TextureLoader resuelve el tamaño intrínseco de la imagen,
+    // y el iso.svg no trae width/height (es "Flexible"), así que la textura
+    // saldría con las dimensiones por defecto del navegador.
+    const logoTex = new THREE.TextureLoader().load('/brand/oficial-02/png/iso-512.png');
     if ('colorSpace' in logoTex) logoTex.colorSpace = THREE.SRGBColorSpace;
-    const LOGO_RATIO = 292 / 214; // proporción del iso.png
+    const LOGO_RATIO = 751.877 / 778.62; // proporción del viewBox del iso
     const LOGO_H = 1.3;
     const logoSprite = new THREE.Sprite(new THREE.SpriteMaterial({
       map: logoTex, transparent: true, depthWrite: false, depthTest: false, opacity: 0
     }));
     logoSprite.scale.set(LOGO_H * LOGO_RATIO, LOGO_H, 1);
     logoSprite.position.y = 0.038;
-    logoSprite.position.x = -0.014 // centra el contenido visual del PNG sobre el núcleo
+    logoSprite.position.x = 0; // el iso nuevo va recortado al arte, no necesita nudge
     logoSprite.renderOrder = 10; // siempre por encima del glow
     system.add(logoSprite);
 

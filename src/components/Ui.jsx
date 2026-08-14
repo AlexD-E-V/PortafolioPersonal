@@ -212,7 +212,7 @@ export function Header({ lang, setLang, status, activeSection, revealed }) {
       <header className={'site-header' + (scrolled ? ' scrolled' : '') + (revealed ? ' revealed' : ' pre-reveal')}>
         <div className="header-inner">
           <a className="logo" href="#inicio" onClick={(e) => { e.preventDefault(); goTo('inicio'); }} aria-label="Alex D.E.V. — Inicio">
-            <img className="logo-img" src="/brand/iso.png" alt="Alex D.E.V." width="49" height="36" />
+            <img className="logo-img" src="/brand/oficial-02/iso.svg" alt="Alex D.E.V." width="35" height="36" />
           </a>
           <nav className="nav-desktop" aria-label="Navegación principal">{navLinks()}</nav>
           <div className="lang-toggle" role="group" aria-label="Idioma">

@@ -7,7 +7,9 @@ import App from '../components/App.jsx';
 // mostrar el preview). Si cambias a dominio propio, actualízalo aquí
 // y en astro.config.mjs.
 const SITE_URL = 'https://alex-d-e-v.vercel.app';
-const OG_IMAGE = SITE_URL + '/brand/og-image.png';
+// 1200x600 — si regeneras el og con otras dimensiones, actualiza también
+// og:image:width / og:image:height más abajo o el preview sale deformado.
+const OG_IMAGE = SITE_URL + '/brand/oficial-02/png/og-image.png';
 const OG_TITLE = 'Alex D.E.V. — Full Stack Developer';
 const OG_DESC =
   'Portafolio de Alex D.E.V.: desarrollo web, apps, videojuegos y consultoría técnica. Cosmos + Código.';
@@ -19,8 +21,12 @@ const OG_DESC =
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-    <link rel="icon" type="image/png" href="/brand/peque-sinfondo.png" />
-    <link rel="apple-touch-icon" href="/brand/peque.png" />
+    {/* El SVG lo prefieren los navegadores modernos y escala solo; el PNG de
+        32px queda de fallback. Ambos llevan fondo propio porque el iso
+        transparente desaparece sobre las barras de pestañas claras. */}
+    <link rel="icon" type="image/svg+xml" href="/brand/oficial-02/iso-badge.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/oficial-02/png/icon-32.png" />
+    <link rel="apple-touch-icon" href="/brand/oficial-02/png/icon-180.png" />
     <meta name="theme-color" content="#070B14" />
 
     <title>Alex D.E.V. — Full Stack Developer</title>
@@ -32,7 +38,7 @@ const OG_DESC =
     <meta property="og:description" content={OG_DESC} />
     <meta property="og:image" content={OG_IMAGE} />
     <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
+    <meta property="og:image:height" content="600" />
     {SITE_URL && <meta property="og:url" content={SITE_URL} />}
     <meta property="og:site_name" content="Alex D.E.V." />
 

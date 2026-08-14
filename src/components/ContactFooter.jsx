@@ -219,7 +219,10 @@ export function Footer({ lang }) {
     <footer className="site-footer">
       <div className="footer-inner">
         <div>
-          <img className="footer-logo" src="/brand/horizontal.png" alt="Alex D.E.V." width="167" height="48" />
+          {/* Va el iso y no el lockup: el lockup nuevo es apilado y a 48px de
+              alto "lex" y "EV" se vuelven ilegibles. Para recuperar el nombre
+              aquí hace falta exportar una versión horizontal desde Illustrator. */}
+          <img className="footer-logo" src="/brand/oficial-02/iso.svg" alt="Alex D.E.V." width="46" height="48" />
           <p className="footer-sub">{t.footer.tagline}</p>
           <p className="footer-copy">{t.footer.copyright.replace('{year}', new Date().getFullYear())}</p>
         </div>

@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-labelledby="adev-iso-raised-title">
+  <title id="adev-iso-raised-title">Alex D.E.V.</title>
+  <defs>
+    <radialGradient id="adev-i-glow" cx="0.5" cy="0.42" r="0.62">
+      <stop offset="0" stop-color="#3981BF" stop-opacity="0.30"/>
+      <stop offset="0.55" stop-color="#3981BF" stop-opacity="0.10"/>
+      <stop offset="1" stop-color="#3981BF" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="adev-i-a" x1="233.049" y1="118.698" x2="570.79" y2="855.525" gradientUnits="userSpaceOnUse"><stop offset="0.09" stop-color="#fff"/><stop offset="0.23" stop-color="#fdffff"/><stop offset="0.3" stop-color="#f5fdff"/><stop offset="0.355" stop-color="#e8fbff"/><stop offset="0.401" stop-color="#d5f7ff"/><stop offset="0.442" stop-color="#bdf3fe"/><stop offset="0.479" stop-color="#9fedfe"/><stop offset="0.514" stop-color="#7be6fe"/><stop offset="0.546" stop-color="#52defe"/><stop offset="0.576" stop-color="#25d6fd"/><stop offset="0.594" stop-color="#06d0fd"/><stop offset="0.615" stop-color="#06cafd"/><stop offset="0.645" stop-color="#05b9fc"/><stop offset="0.679" stop-color="#049cfc"/><stop offset="0.716" stop-color="#0275fa"/><stop offset="0.754" stop-color="#0044f9"/></linearGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="180" fill="#161E33"/>
+  <rect width="1024" height="1024" rx="180" fill="url(#adev-i-glow)"/>
+  <rect x="1" y="1" width="1022" height="1022" rx="179" fill="none" stroke="#ffffff" stroke-opacity="0.08" stroke-width="2"/>
+  <g transform="translate(185.69 174.08) scale(0.86800)">
+    <path d="M740.93,407.9c-26-33.243-91.779-38.474-110.31-40.25-72.27-6.926-145.14-4.25-217.71-6.37Q411.32,180.635,409.73,0c-37.25,56.09-71.24,100.97-96.85,133.17-46.62,58.62-106.46,133.11-198.8,211.54A1219.894,1219.894,0,0,1,0,430.67a498.142,498.142,0,0,0,59.92-24.15c30.73-14.77,100.67-59.9,238.94-210.91,26.44-28.87,59.77-71.69,98.12-124.25L382.97,361.91q-117.57.96-235.12,1.91a55.806,55.806,0,0,0,16.99,20.48c9.19,6.78,19.44,9.58,30.16,10.75,23.53,2.55,93.1,1.81,186.69-3.83-.161,95.375-1.07,276.322,1.063,351.932.1,3.463,14.442,35.468,14.442,35.468h8.075c14.961-5.981,36.4-15.088,61.429-27.679,53.9-27.119,135.75-76.106,212.549-160.921,61.846-68.3,72.231-106.623,72.617-135.644C752.24,426.163,743.4,411.063,740.93,407.9Zm-103.1,180.208c-28.539,29.617-67.156,69.233-130.308,112.252a795.591,795.591,0,0,1-95.884,55.96V388.67c42.12-2.38,86.58-3.59,133.17-3.18,36.082.318,56.156-.626,85.81,2.55,41.619,4.457,71.421,12.459,84.049,40.266,2.481,5.463,7.839,20.388-6.748,58.492C692.934,525.947,670.382,554.329,637.832,588.108Z" fill="url(#adev-i-a)"/>
+  </g>
+</svg>

@@ -7,8 +7,9 @@ import '../styles/global.css';
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="icon" type="image/png" href="/brand/peque-sinfondo.png" />
-    <link rel="apple-touch-icon" href="/brand/peque.png" />
+    <link rel="icon" type="image/svg+xml" href="/brand/oficial-02/iso-badge.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/brand/oficial-02/png/icon-32.png" />
+    <link rel="apple-touch-icon" href="/brand/oficial-02/png/icon-180.png" />
     <meta name="theme-color" content="#070B14" />
     <meta name="robots" content="noindex" />
     <title>404 — Alex D.E.V.</title>
@@ -23,7 +24,9 @@ import '../styles/global.css';
   <body>
     <div class="nebula-bg" aria-hidden="true"></div>
     <main class="notfound">
-      <img class="nf-logo" src="/brand/iso.png" alt="Alex D.E.V." width="82" height="60" />
+      {/* width/height van en la proporción del iso (751.877x778.62) para
+          reservar el hueco y evitar salto de layout; el alto real lo fija .nf-logo */}
+      <img class="nf-logo" src="/brand/oficial-02/iso.svg" alt="Alex D.E.V." width="58" height="60" />
       <p class="nf-code">404</p>
       <h1 class="nf-title">Te saliste de órbita</h1>
       <p class="nf-desc">
