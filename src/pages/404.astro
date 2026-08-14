@@ -24,9 +24,9 @@ import '../styles/global.css';
   <body>
     <div class="nebula-bg" aria-hidden="true"></div>
     <main class="notfound">
-      {/* width/height van en la proporción del iso (751.877x778.62) para
+      {/* width/height van en la proporción del lockup (827.459x778.62) para
           reservar el hueco y evitar salto de layout; el alto real lo fija .nf-logo */}
-      <img class="nf-logo" src="/brand/oficial-02/iso.svg" alt="Alex D.E.V." width="58" height="60" />
+      <img class="nf-logo" src="/brand/oficial-02/logo.svg" alt="Alex D.E.V." width="136" height="128" />
       <p class="nf-code">404</p>
       <h1 class="nf-title">Te saliste de órbita</h1>
       <p class="nf-desc">
@@ -50,10 +50,12 @@ import '../styles/global.css';
         gap: 18px;
         padding: 40px 24px;
       }
+      /* Aquí va el lockup completo y no el iso, así que el suelo lo marca la
+         legibilidad de "lex": por debajo de ~112px de alto se empasta. */
       .nf-logo {
-        height: 60px;
+        height: clamp(104px, 20vw, 128px);
         width: auto;
-        margin-bottom: 8px;
+        margin-bottom: 16px;
         opacity: 0.95;
       }
       .nf-code {

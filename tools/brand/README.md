@@ -62,6 +62,7 @@ Los badges son 1:1 con radio proporcional a `--r-modal`.
 | `og:image` / `twitter:image` | `png/og-image.png` |
 | Header (`Ui.jsx`) | `iso.svg` a 36px |
 | Footer (`ContactFooter.jsx`) | `iso.svg` a 48px |
+| Página 404 | `logo.svg` a 104–128px de alto |
 | Núcleo del hero (`Hero3D.jsx`) | `png/iso-512.png` |
 
 En el hero va el PNG y no el SVG a propósito: el `TextureLoader` de Three.js
